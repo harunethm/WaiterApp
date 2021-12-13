@@ -1,0 +1,75 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+
+    <link href="~/Belgeler/CSS/NormalizeCss.css" rel="stylesheet" />
+
+    <link href="~/Belgeler/Bootstrap/bootstrap-4.6.1-dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Belgeler/CSS/MyCss.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+
+    <script src="~/Belgeler/JS/JQuery/JQuery.js"></script>
+    <script src="~/Belgeler/Bootstrap/bootstrap-4.6.1-dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/Belgeler/JS/MyJS.js"></script>
+
+    @RenderSection("styles", required: false)
+
+    @RenderSection("scripts", required: false)
+
+</head>
+<body>
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="@Url.Action("Menu", "Home")">
+                <img src="~/Belgeler/Images/restaurant.png" class="logo mx-2" />
+                WaiterApp
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mynavbar" aria-expanded="false">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="mynavbar">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item @(ViewBag.active == "menu" ? "active" : "")">
+                        <a class="nav-link" href="@Url.Action("Menu", "Home")">Menü</a>
+                    </li>
+                    <li class="nav-item @(ViewBag.active == "masalar" ? "active" : "")">
+                        <a class="nav-link" href="@Url.Action("Masalar", "Home")">Masalar</a>
+                    </li>
+                    <li class="nav-item @(ViewBag.active == "siparisler" ? "active" : "")">
+                        <a class="nav-link" href="@Url.Action("Siparisler", "Home")">Siparişler</a>
+                    </li>
+                    @*<li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="dropdown05" data-toggle="dropdown" aria-expanded="false">Dropdown</a>
+                            <div class="dropdown-menu" aria-labelledby="dropdown05">
+                                <a class="dropdown-item" href="#">Action</a>
+                                <a class="dropdown-item" href="#">Another action</a>
+                                <a class="dropdown-item" href="#">Something else here</a>
+                            </div>
+                        </li>*@
+                </ul>
+                <a class="" href="@Url.Action("Index", "Profile")">
+                    <i class="fas fa-user"></i>
+                    @ViewBag.user.name @ViewBag.user.surname
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="my-2">@RenderBody()</div>
+
+    <style type="text/css">
+        .logo {
+            height: 40px;
+            width: 40px;
+            background-blend-mode: color;
+            mix-blend-mode: darken;
+            filter: drop-shadow(0px 0px 10px #ffffff);
+        }
+    </style>
+
+</body>
+</html>

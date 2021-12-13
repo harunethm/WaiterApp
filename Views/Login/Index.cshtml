@@ -1,0 +1,160 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+
+    <link href="~/Belgeler/Bootstrap/bootstrap-4.6.1-dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 mx-auto">
+                <div class="myform form ">
+                    <div class="logo mb-3">
+                        <div class="col-md-12 mb-5 text-center">
+                            <img id="logo" src="~/Belgeler/Images/restaurant.png" />
+                        </div>
+                        <div class="col-md-12 text-center">
+                            <h1>Giriş</h1>
+                        </div>
+                    </div>
+                    <form action="@Url.Action("Index","Login")" method="post" name="login">
+                        <div class="form-group mx-2">
+                            <label for="userName">E-Mail Adresi</label>
+                            <input type="text" name="userName" class="form-control form-control-plaintext inpt" id="userName" placeholder="E-Mail adresinizi giriniz.">
+                        </div>
+                        <div class="form-group mx-2">
+                            <label for="password">Şifre</label>
+                            <input type="text" name="password" id="password" class="form-control form-control-plaintext inpt" placeholder="Şifre giriniz.">
+                        </div>
+                        <div class="col-md-12 text-center my-3 mt-5 mx-2">
+                            <button type="submit" class=" btn btn-block mybtn btn-primary tx-tfm ">GİRİŞ YAP</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="~/Belgeler/JS/JQuery/JQuery.js"></script>
+    <script src="~/Belgeler/Bootstrap/bootstrap-4.6.1-dist/js/bootstrap.min.js"></script>
+</body>
+</html>
+<style type="text/css">
+    body {
+        padding-top: 4.2rem;
+        padding-bottom: 4.2rem;
+        background-color: #4b4a49;
+        color: #ffffff;
+        margin: 0px;
+        min-height: 100%;
+        width: 100%;
+    }
+
+    html {
+        margin: 0px;
+        height: 100%;
+        width: 100%;
+    }
+
+    h1, h2, h3 {
+        font-family: 'Kaushan Script', cursive;
+    }
+
+    #logo {
+        height: 70px;
+        width: 70px;
+        background-blend-mode: color;
+        mix-blend-mode: hard-light;
+        filter: drop-shadow(0px 0px 10px #000000);
+    }
+
+    .inpt {
+        background: transparent;
+        color: white;
+        padding-inline: 5%;
+    }
+
+    .myform {
+        position: relative;
+        display: -ms-flexbox;
+        display: flex;
+        padding: 1rem;
+        -ms-flex-direction: column;
+        flex-direction: column;
+        width: 100%;
+        pointer-events: auto;
+        background: linear-gradient(192.05deg, #FF5722 0%, #FF9800 100%);
+        background-clip: padding-box;
+        border: 1px solid rgba(0,0,0,0);
+        border-radius: 1.1rem;
+        outline: 0;
+        max-width: 500px;
+        /*box-shadow: inset 0px 0px 15px #ffffff;*/
+        box-shadow: 0px 0px 15px rgba(0, 0, 0, .2);
+    }
+
+    .tx-tfm {
+        text-transform: uppercase;
+    }
+
+    .mybtn {
+        border-radius: 50px;
+        color: #ff9800;
+        background-color: white;
+        border: 0px;
+        box-shadow: 0px 4px 10px rgba(0,0,0,.4);
+    }
+
+        .mybtn:hover, .mybtn:visited, .mybtn:active, .mybtn:focus {
+            border-radius: 50px;
+            background: linear-gradient(192.05deg, #FF9800 0%, #FF5722 100%);
+            background-color: white;
+        }
+
+    form .error {
+        color: #ff0000;
+    }
+</style>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+    });
+
+    //$(function () {
+
+
+    //    $("form[name='login']").validate({
+    //        rules: {
+
+    //            email: {
+    //                required: true,
+    //            },
+    //            password: {
+    //                required: true,
+
+    //            }
+    //        },
+    //        messages: {
+    //            email: "Lütfen geçerli bir e-mail adresi veya telefon numarası adresi giriniz.",
+
+    //            password: {
+    //                required: "Lütfen şifrenizi giriniz.",
+
+    //            }
+
+    //        },
+    //        submitHandler: function (form) {
+    //            form.submit();
+    //        }
+    //    });
+    //});
+
+</script>

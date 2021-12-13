@@ -1,0 +1,302 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="DBWaiterAppModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="category">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="name" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="status" Type="Boolean" Nullable="false" />
+    <NavigationProperty Name="products" Relationship="Self.FK_product_category" FromRole="category" ToRole="product" />
+  </EntityType>
+  <EntityType Name="product">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="categoryID" Type="Int32" Nullable="false" />
+    <Property Name="name" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="description" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="price" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+    <Property Name="status" Type="Boolean" Nullable="false" />
+    <NavigationProperty Name="category" Relationship="Self.FK_product_category" FromRole="product" ToRole="category" />
+    <NavigationProperty Name="orders" Relationship="DBWaiterAppModel.FK_order_product" FromRole="product" ToRole="order" />
+  </EntityType>
+  <EntityType Name="receipt">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="tableID" Type="Int32" Nullable="false" />
+    <Property Name="waiterID" Type="Int32" Nullable="false" />
+    <Property Name="openingTime" Type="DateTime" Precision="3" />
+    <Property Name="closingTime" Type="DateTime" Precision="3" />
+    <Property Name="status" Type="Boolean" Nullable="false" />
+    <NavigationProperty Name="takeAways" Relationship="Self.FK_takeAway_receipt" FromRole="receipt" ToRole="takeAway" />
+    <NavigationProperty Name="table" Relationship="DBWaiterAppModel.FK_receipt_table" FromRole="receipt" ToRole="table" />
+    <NavigationProperty Name="orders" Relationship="DBWaiterAppModel.FK_order_receipt" FromRole="receipt" ToRole="order" />
+    <NavigationProperty Name="user" Relationship="DBWaiterAppModel.FK_receipt_user" FromRole="receipt" ToRole="user" />
+  </EntityType>
+  <EntityType Name="sysdiagram">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="principal_id" Type="Int32" Nullable="false" />
+    <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="version" Type="Int32" />
+    <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+  </EntityType>
+  <EntityType Name="takeAway">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="receiptID" Type="Int32" Nullable="false" />
+    <Property Name="customerName" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="customerSurname" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="phoneNumber" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="customerAdress" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="status" Type="Boolean" Nullable="false" />
+    <NavigationProperty Name="receipt" Relationship="Self.FK_takeAway_receipt" FromRole="takeAway" ToRole="receipt" />
+  </EntityType>
+  <Association Name="FK_product_category">
+    <End Role="category" Type="Self.category" Multiplicity="1" />
+    <End Role="product" Type="Self.product" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="category">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="product">
+        <PropertyRef Name="categoryID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_takeAway_receipt">
+    <End Role="receipt" Type="Self.receipt" Multiplicity="1" />
+    <End Role="takeAway" Type="Self.takeAway" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="receipt">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="takeAway">
+        <PropertyRef Name="receiptID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="DBWaiterAppEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="categories" EntityType="Self.category" />
+    <EntitySet Name="products" EntityType="Self.product" />
+    <EntitySet Name="receipts" EntityType="Self.receipt" />
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
+    <EntitySet Name="takeAways" EntityType="Self.takeAway" />
+    <AssociationSet Name="FK_product_category" Association="Self.FK_product_category">
+      <End Role="category" EntitySet="categories" />
+      <End Role="product" EntitySet="products" />
+    </AssociationSet>
+    <AssociationSet Name="FK_takeAway_receipt" Association="Self.FK_takeAway_receipt">
+      <End Role="receipt" EntitySet="receipts" />
+      <End Role="takeAway" EntitySet="takeAways" />
+    </AssociationSet>
+    <EntitySet Name="reservations" EntityType="DBWaiterAppModel.reservation" />
+    <EntitySet Name="roles" EntityType="DBWaiterAppModel.role" />
+    <EntitySet Name="tables" EntityType="DBWaiterAppModel.table" />
+    <AssociationSet Name="FK_receipt_table" Association="DBWaiterAppModel.FK_receipt_table">
+      <End Role="table" EntitySet="tables" />
+      <End Role="receipt" EntitySet="receipts" />
+    </AssociationSet>
+    <AssociationSet Name="FK_reservation_table" Association="DBWaiterAppModel.FK_reservation_table">
+      <End Role="table" EntitySet="tables" />
+      <End Role="reservation" EntitySet="reservations" />
+    </AssociationSet>
+    <EntitySet Name="payments" EntityType="DBWaiterAppModel.payment" />
+    <EntitySet Name="orders" EntityType="DBWaiterAppModel.order" />
+    <AssociationSet Name="FK_order_product" Association="DBWaiterAppModel.FK_order_product">
+      <End Role="product" EntitySet="products" />
+      <End Role="order" EntitySet="orders" />
+    </AssociationSet>
+    <AssociationSet Name="FK_order_receipt" Association="DBWaiterAppModel.FK_order_receipt">
+      <End Role="receipt" EntitySet="receipts" />
+      <End Role="order" EntitySet="orders" />
+    </AssociationSet>
+    <AssociationSet Name="FK_payment_order" Association="DBWaiterAppModel.FK_payment_order">
+      <End Role="order" EntitySet="orders" />
+      <End Role="payment" EntitySet="payments" />
+    </AssociationSet>
+    <EntitySet Name="users" EntityType="DBWaiterAppModel.user" />
+    <AssociationSet Name="FK_receipt_user" Association="DBWaiterAppModel.FK_receipt_user">
+      <End Role="user" EntitySet="users" />
+      <End Role="receipt" EntitySet="receipts" />
+    </AssociationSet>
+    <AssociationSet Name="FK_user_role" Association="DBWaiterAppModel.FK_user_role">
+      <End Role="role" EntitySet="roles" />
+      <End Role="user" EntitySet="users" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="reservation">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="tableID" Type="Int32" Nullable="false" />
+    <Property Name="name" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="phoneNumber" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="dateTimeNow" Type="DateTime" Precision="3" />
+    <Property Name="reservationDate" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="numberOfPeople" Type="Int32" Nullable="false" />
+    <Property Name="status" Type="Boolean" Nullable="false" />
+    <NavigationProperty Name="table" Relationship="DBWaiterAppModel.FK_reservation_table" FromRole="reservation" ToRole="table" />
+  </EntityType>
+  <EntityType Name="role">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="name" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="authorityLevel" Type="Int32" Nullable="false" />
+    <Property Name="status" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="users" Relationship="DBWaiterAppModel.FK_user_role" FromRole="role" ToRole="user" />
+  </EntityType>
+  <EntityType Name="table">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="tableName" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="balance" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="availability" Type="Int32" Nullable="false" />
+    <Property Name="numberOfChairs" Type="Int32" Nullable="false" />
+    <Property Name="status" Type="Boolean" Nullable="false" />
+    <NavigationProperty Name="receipts" Relationship="DBWaiterAppModel.FK_receipt_table" FromRole="table" ToRole="receipt" />
+    <NavigationProperty Name="reservations" Relationship="DBWaiterAppModel.FK_reservation_table" FromRole="table" ToRole="reservation" />
+  </EntityType>
+  <Association Name="FK_receipt_table">
+    <End Type="DBWaiterAppModel.table" Role="table" Multiplicity="1" />
+    <End Type="DBWaiterAppModel.receipt" Role="receipt" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="table">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="receipt">
+        <PropertyRef Name="tableID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_reservation_table">
+    <End Type="DBWaiterAppModel.table" Role="table" Multiplicity="1" />
+    <End Type="DBWaiterAppModel.reservation" Role="reservation" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="table">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="reservation">
+        <PropertyRef Name="tableID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="payment">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="orderID" Type="Int32" Nullable="false" />
+    <Property Name="paidAmount" Type="Int32" Nullable="false" />
+    <Property Name="paymentMethod" Type="Int32" Nullable="false" />
+    <Property Name="discountAmount" Type="Decimal" Precision="19" Scale="4" />
+    <Property Name="dateTime" Type="DateTime" Precision="3" />
+    <Property Name="total" Type="Decimal" Precision="19" Scale="4" />
+    <NavigationProperty Name="order" Relationship="DBWaiterAppModel.FK_payment_order" FromRole="payment" ToRole="order" />
+  </EntityType>
+  <EntityType Name="order">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="receiptID" Type="Int32" Nullable="false" />
+    <Property Name="productID" Type="Int32" Nullable="false" />
+    <Property Name="amount" Type="Int32" Nullable="false" />
+    <Property Name="paidAmount" Type="Int32" Nullable="false" />
+    <Property Name="comment" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="status" Type="Boolean" Nullable="false" />
+    <NavigationProperty Name="product" Relationship="DBWaiterAppModel.FK_order_product" FromRole="order" ToRole="product" />
+    <NavigationProperty Name="receipt" Relationship="DBWaiterAppModel.FK_order_receipt" FromRole="order" ToRole="receipt" />
+    <NavigationProperty Name="payments" Relationship="DBWaiterAppModel.FK_payment_order" FromRole="order" ToRole="payment" />
+  </EntityType>
+  <Association Name="FK_order_product">
+    <End Type="DBWaiterAppModel.product" Role="product" Multiplicity="1" />
+    <End Type="DBWaiterAppModel.order" Role="order" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="product">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="order">
+        <PropertyRef Name="productID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_order_receipt">
+    <End Type="DBWaiterAppModel.receipt" Role="receipt" Multiplicity="1" />
+    <End Type="DBWaiterAppModel.order" Role="order" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="receipt">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="order">
+        <PropertyRef Name="receiptID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_payment_order">
+    <End Type="DBWaiterAppModel.order" Role="order" Multiplicity="1" />
+    <End Type="DBWaiterAppModel.payment" Role="payment" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="order">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="payment">
+        <PropertyRef Name="orderID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="user">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="profilePicture" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="name" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="surname" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="eMail" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="password" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="registerDate" Type="DateTime" Precision="3" />
+    <Property Name="phoneNumber" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <Property Name="roleID" Type="Int32" Nullable="false" />
+    <Property Name="status" Type="Boolean" Nullable="false" />
+    <NavigationProperty Name="receipts" Relationship="DBWaiterAppModel.FK_receipt_user" FromRole="user" ToRole="receipt" />
+    <NavigationProperty Name="role" Relationship="DBWaiterAppModel.FK_user_role" FromRole="user" ToRole="role" />
+  </EntityType>
+  <Association Name="FK_receipt_user">
+    <End Type="DBWaiterAppModel.user" Role="user" Multiplicity="1" />
+    <End Type="DBWaiterAppModel.receipt" Role="receipt" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="user">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="receipt">
+        <PropertyRef Name="waiterID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_user_role">
+    <End Type="DBWaiterAppModel.role" Role="role" Multiplicity="1" />
+    <End Type="DBWaiterAppModel.user" Role="user" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="role">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="user">
+        <PropertyRef Name="roleID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema>

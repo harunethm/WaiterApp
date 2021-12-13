@@ -1,0 +1,80 @@
+﻿@using WaiterApp.Models.Model
+@{
+    ViewBag.Title = "Menü";
+    ViewBag.active = "menu";
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+    List<mMenu> menu = ViewBag.menu;
+    mUser user = ViewBag.user;
+}
+
+<div class="container text-center menu">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-10 col-lg-8">
+            @if (menu != null && menu.Count > 0)
+            {
+                foreach (var menuItem in menu)
+                {
+                    <div class="card mycard my-3">
+                        <div class="card-body">
+                            <h2>@menuItem.category.name</h2>
+                            <div class="table-responsive">
+                                <table class="table table-borderless">
+                                    <tbody>
+                                        @foreach (var product in menuItem.products)
+                                        {
+                                            <tr>
+                                                <td class="align-middle">@product.name</td>
+                                                <td class="align-middle ">@product.description</td>
+                                                <td class="align-middle">@(product.price.ToString("F")) TL</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+<style type="text/css">
+    .menu {
+        font-family: 'PatricHand', cursive !important;
+    }
+
+    tr, td {
+        width: 100%;
+        color: white;
+        vertical-align: middle;
+    }
+
+    th:first-child {
+        width: 30%;
+        text-align: start;
+    }
+
+    th:nth-child(2) {
+        width: 40%;
+    }
+
+    th:last-child {
+        width: 30%;
+        text-align: end;
+    }
+
+    td:first-child {
+        width: 30%;
+        text-align: start;
+    }
+
+    td:nth-child(2) {
+        width: 40%;
+        color: #a0a0a0;
+    }
+
+    td:last-child {
+        width: 30%;
+        text-align: end;
+    }
+</style>

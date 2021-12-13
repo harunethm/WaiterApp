@@ -1,0 +1,336 @@
+﻿@using WaiterApp.Models.Model
+@{
+    ViewBag.Title = "Payment";
+    Layout = "~/Views/Shared/_PaymentLayout.cshtml";
+    List<mOrder> orders = ViewBag.orders;
+    string jsonOrders = ViewBag.jsonOrders;
+    bool siparis = orders == null ? false : orders.Count < 1 ? false : true;
+}
+
+<div class="mx-3">
+    <div class="row">
+        <div class="col-12 col-xl-8">
+            <div class="card mycard vh-90">
+                <div class="card-header text-center">
+                    <h4>Kasa</h4>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group">
+                        <li class="list-group-item border-bottom">
+                            <div class="row">
+                                <div class="col-3">
+                                    Ürün Adı
+                                </div>
+                                <div class="col-2">
+                                    Toplam Adet
+                                </div>
+                                <div class="col-2">
+                                    Kalan Adet
+                                </div>
+                                <div class="col-3 justify-content-around">
+                                    <button type="button" class="input-group-btn mycard text-white btnTumunuSil">
+                                        <i class="fas fa-step-backward"></i>
+                                    </button>
+                                    Adet
+                                    <button type="button" class="input-group-btn mycard text-white btnTumunuSec">
+                                        <i class="fas fa-step-forward"></i>
+                                    </button>
+                                </div>
+                                <div class="col-2">
+                                    Birim Fiyatı
+                                </div>
+                            </div>
+                        </li>
+                        @if (siparis)
+                        {
+                            foreach (var order in orders)
+                            {
+                                <li class="list-group-item">
+                                    <div class="row">
+                                        <div class="col-3">
+                                            @order.product.name
+                                        </div>
+                                        <div class="col-2">
+                                            @order.amount
+                                        </div>
+                                        <div class="col-2">
+                                            @(order.amount - order.paidAmount)
+                                        </div>
+                                        <div class="col-3">
+                                            <div class="input-group">
+                                                <button type="button" class="input-group-btn mycard text-white btnHepsiniSil" data-orderid="@order.ID" data-productid="@order.productID">
+                                                    <i class="fas fa-step-backward"></i>
+                                                </button>
+                                                <button type="button" class="input-group-btn mycard text-white btnAzalt" data-orderid="@order.ID" data-productid="@order.productID">
+                                                    <i class="fas fa-minus"></i>
+                                                </button>
+
+                                                <input type="text" class="form-control text-center txtAdet inpt" placeholder="0" value="0">
+
+                                                <button type="button" class="input-group-btn mycard text-white btnArttir" data-max="@(order.amount - order.paidAmount)" data-orderid="@order.ID" data-productid="@order.productID">
+                                                    <i class="fas fa-plus"></i>
+                                                </button>
+                                                <button type="button" class="input-group-btn mycard text-white btnHepsiniSec" data-max="@(order.amount - order.paidAmount)" data-orderid="@order.ID" data-productid="@order.productID">
+                                                    <i class="fas fa-step-forward"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="col-2">
+                                            @order.product.price.ToString("F")
+                                        </div>
+                                    </div>
+                                </li>
+                            }
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-xl-4">
+            <div class="row align-items-center">
+                <div class="col-6 p-3">
+                    <div class="row mycard p-3 mb-3 justify-content-around">
+                        <div class="form-check form-check-inline mycard px-3 py-1">
+                            <input type="radio" name="radio" id="rbCash" class="form-check-input" checked />
+                            <label for="radioNakit" class="form-check-label">Nakit</label>
+                        </div>
+                        <div class="form-check form-check-inline mycard px-3 py-1">
+                            <input type="radio" name="radio" id="rbCreditCard" class="form-check-input" />
+                            <label for="radioKrediKarti" class="form-check-label">Kredi Kartı</label>
+                        </div>
+                    </div>
+                    <div class="row mycard">
+                        <div class="input-group p-3">
+                            <span class="input-group-text mycard text-white">İndirim</span>
+                            <input type="number" class="form-control inpt" placeholder="İndirim Miktarı" value="0,00" id="txtDiscount">
+                            <span class="input-group-text mycard text-white-50">TL</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 text-center">
+                    <h4 class="txtTotal">0,00 TL</h4>
+                    @if (siparis)
+                    {
+                        <button type="button" class="btn mybtn w-100" id="btnOde">
+                            Öde
+                        </button>
+                    }
+                    else
+                    {
+                        <button type="button" class="btn mybtn w-100" id="btnMasayiKapat">
+                            Masayı Kapat
+                        </button>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section styles{
+    <style type="text/css">
+        .list-group-item {
+            background-color: transparent;
+            border: none;
+        }
+
+        .card-body {
+            max-height: 90vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        li > div {
+            text-align: center;
+        }
+
+            li > div > div:first-child {
+                text-align: start;
+            }
+
+            li > div > div:last-child {
+                text-align: end;
+            }
+
+        #selectAll {
+            cursor: pointer;
+        }
+
+        .vh-90 {
+            height: 90vh;
+        }
+
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+    </style>
+}
+
+
+@section scripts{
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $('#txtDiscount').val(0.00);
+            var stringJson = ('@Html.Raw(ViewBag.jsonOrders)');
+
+            var urunler = $.parseJSON(stringJson);
+
+            var sepet = [];
+
+            $('#txtDiscount').on('focusout', function () {
+                var discount = parseFloat($(this).val());
+                var total = parseFloat($('.txtTotal').text().replace('TL', '').replace(',', '.'));
+                if (discount > total) {
+                    discount = total;
+                }
+                $(this).val(discount.toFixed(2));
+            });
+
+            $('.btnArttir').on('click', function () {
+                var btn = $(this);
+                var orderID = btn.data('orderid');
+                var txtAdet = btn.siblings('.txtAdet');
+                var adet = txtAdet.val();
+                var maxAdet = btn.data('max')
+
+                if (adet < maxAdet) {
+                    for (var i = 0; i < urunler.length; i++) {
+                        if (urunler[i]['ID'] == orderID) {
+                            item = {};
+                            item['orderid'] = urunler[i]['ID'];
+                            item['product'] = urunler[i]['product'];
+                            sepet.push(item);
+                        }
+                    }
+                    txtAdet.val(parseInt(adet) + 1);
+                }
+                UpdateTotal();
+            });
+
+            $('.btnAzalt').on('click', function () {
+                var btn = $(this);
+                var orderID = btn.data('orderid');
+                var txtAdet = btn.siblings('.txtAdet');
+                var adet = txtAdet.val();
+
+                if (parseInt(adet) > 0) {
+                    for (var i = 0; i < sepet.length; i++) {
+                        if (sepet[i]['orderid'] == orderID) {
+                            sepet.splice(i, 1);
+                            break;
+                        }
+                    }
+                    txtAdet.val(parseInt(adet) - 1);
+                }
+                UpdateTotal();
+             });
+
+            $('.btnHepsiniSec').on('click', function () {
+                var btn = $(this);
+                var orderID = btn.data('orderid');
+                var txtAdet = btn.siblings('.txtAdet');
+                var adet = txtAdet.val();
+                var maxAdet = btn.data('max')
+                var kalanAdet = parseInt(maxAdet) - parseInt(txtAdet.val());
+
+                if (parseInt(maxAdet) > parseInt(adet)) {
+                    for (var i = 0; i < urunler.length; i++) {
+                        if (urunler[i]['ID'] == orderID) {
+                            for (var j = 0; j < kalanAdet; j++) {
+                                item = {};
+                                item['orderid'] = urunler[i]['ID'];
+                                item['product'] = urunler[i]['product'];
+                                sepet.push(item);
+                            }
+                        }
+                    }
+
+                    UpdateTotal();
+                    txtAdet.val(maxAdet);
+                }
+            });
+
+            $('.btnHepsiniSil').on('click', function () {
+
+                var btn = $(this);
+                var orderID = btn.data('orderid');
+                var txtAdet = btn.siblings('.txtAdet');
+
+                sepet = sepet.filter(function (index) {
+                    return index['orderid'] != orderID;
+                });
+
+                UpdateTotal();
+                txtAdet.val(0);
+             });
+
+            $('.btnTumunuSil').on('click', function () {
+                $('.txtAdet').val('0');
+                sepet = [];
+                UpdateTotal(0);
+            });
+
+            $('.btnTumunuSec').on('click', function () {
+                $('.btnTumunuSil').trigger('click');
+
+                $('.txtAdet').each(function () {
+                    $(this).val($(this).siblings('.btnArttir').data('max'));
+                });
+
+
+                for (var i = 0; i < urunler.length; i++) {
+                    for (var j = 0; j < urunler[i]['amount']; j++) {
+                        item = {};
+                        item['orderid'] = urunler[i]['ID'];
+                        item['product'] = urunler[i]['product'];
+                        sepet.push(item);
+                    }
+                }
+                UpdateTotal();
+
+            });
+
+            $('#btnOde').on('click', function () {
+
+                var nakit = $('#rbCash');
+                var krediKarti = $('#rbCreditCard');
+                var indirim = $('#txtDiscount');
+
+                var url = '@Url.Action("Pay", "Payment")';
+                var data = '"sepet":\'' + JSON.stringify(sepet) + '\',"isCash":' + nakit.is(':checked') + ',"isCreditCard":' + krediKarti.is(':checked') + ',"discount":\"' + indirim.val() + '\"';
+
+                myajax(url, data, function (e) { if (e.confirm) window.location.reload(); else alert('Bir şeyler ters gitti !!'); }, function () { });
+            });
+
+            $('#btnMasayiKapat').on('click', function () {
+                var url = '@Url.Action("MasayiKapat", "Home", new { tableID = "2"})';
+
+                myajax(url, '', function (e) { if(e.confirm) window.location.href = '@Url.Action("Masalar", "Home")' }, function () { });
+            });
+
+
+
+            function UpdateTotal() {
+                var total = 0;
+                var discount = parseFloat($('#txtDiscount').val());
+                for (var i = 0; i < sepet.length; i++) {
+                    total += parseFloat(sepet[i]['product']['price']);
+                }
+                if (total > discount)
+                    total -= discount;
+                else
+                    total = 0;
+                $('.txtTotal').text((total.toFixed(2) + ' TL').replace('.', ','));
+            }
+
+        });
+    </script>
+}

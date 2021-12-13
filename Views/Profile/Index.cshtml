@@ -1,0 +1,119 @@
+﻿@using WaiterApp.Models.Model
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+    mUser user = ViewBag.user;
+}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-10 col-lg-8">
+            <div class="card profile-card">
+                <div class="card-header text-center">
+                    <img src="@(user.profilePicture ?? "/Belgeler/Images/user.png")" class="profilePicture" />
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-danger" role="alert">
+                        Lütfen bilgilerin tam olduğundan emin olun.
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="form-group">
+                        <label for="name" class="control-label">İsim</label>
+                        <input type="text" name="name" class="form-control" value="@(user != null ? user.name : "")" id="name" />
+                    </div>
+                    <div class="form-group">
+                        <label for="surName" class="control-label">Soyisim</label>
+                        <input type="text" name="surName" class="form-control" value="@(user != null ? user.surname : "")" id="surName" />
+                    </div>
+                    <div class="form-group">
+                        <label for="eMail" class="control-label">E-Mail</label>
+                        <input type="email" name="eMail" class="form-control" value="@(user != null ? user.eMail : "")" id="eMail" />
+                    </div>
+                    <div class="form-group">
+                        <label for="phoneNumber" class="control-label">Telefon Numarası</label>
+                        <input type="number" name="phoneNumber" class="form-control" value="@(user != null ? user.phoneNumber  : "")" id="phoneNumber" />
+                    </div>
+                    <div class="form-group">
+                        <label for="password" class="control-label">Şifre</label>
+                        <input type="password" name="password" class="form-control" value="@(user != null ? user.password : "")" id="password" />
+                    </div>
+                    <div class="form-group">
+                        <label for="passwordRepeat" class="control-label">Şifre Tekrar</label>
+                        <input type="password" name="passwordRepeat" class="form-control" id="passwordRepeat" />
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="row px-4 text-center">
+                        <div class="col-4">
+                            <button class="btn btn-outline-danger" id="btnBack">Geri</button>
+                        </div>
+                        <div class="col-4">
+                            <button class="btn btn-danger" id="btnLogOut">Çıkış Yap</button>
+                        </div>
+                        <div class="col-4">
+                            <button class="btn btn-outline-success" id="btnConfirmChanges">Değişiklikleri Onayla</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section styles {
+    <style type="text/css">
+        .profilePicture {
+            height: 10rem;
+            width: 10rem;
+            padding: 1rem;
+            overflow: hidden;
+            object-fit: cover;
+            background: linear-gradient(192.05deg, #FF5722 0%, #FF9800 100%);
+            border-radius: 5rem;
+        }
+    </style>
+}
+
+@section scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $('.alert').alert('close');
+
+            $('#btnBack').on('click', function () {
+                if (history.length > 1)
+                    history.go(-1);
+                else
+                    window.location.href = "@Url.Action("Menu", "Home")";
+            });
+
+            $('#btnLogOut').on('click', function () {
+                var url = '@Url.Action("LogOut", "Login")';
+                myajax(url, '', function (e) { if(e.confirm) window.location.href = '@Url.Action("Index", "Login")' }, function () { });
+            });
+
+            $('#btnConfirmChanges').on('click', function () {
+                var name = $('#name').val();
+                var surname = $('#surName').val();
+                var eMail = $('#eMail').val();
+                var phoneNumber = $('#phoneNumber').val();
+                var password = $('#password').val();
+                var passwordRepeat = $('#passwordRepeat').val();
+
+                var url = '@Url.Action("EditProfile", "Profile")';
+                var data = 'name:"' + name + '",surname:"' + surname + '",eMail:"' + eMail + '",phoneNumber:"' + phoneNumber + '",password:"' + password + '",passwordRepeat:"' + passwordRepeat + '"';
+
+                myajax(url, data, function (e) {
+                    if (e.confirm)
+                        window.location.reload();
+                    else
+                        $('.alert').alert();
+                }, function (e) {
+                    console.log(e.Message);
+                });
+            });
+        });
+    </script>
+}

@@ -1,0 +1,89 @@
+﻿
+@font-face {
+    font-family: 'Mohave';
+    src: url('../Fonts/Mohave/Mohave-VariableFont_wght.ttf');
+}
+
+@font-face {
+    font-family: 'PatricHand';
+    src: url('../Fonts/Patrick Hand/PatrickHand-Regular.ttf');
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    min-height: 100%;
+    font-family: 'Mohave', sans-serif;
+}
+
+body {
+    vertical-align: central;
+    color: white !important;
+    background: linear-gradient(192.05deg, #FF5722 0%, #FF9800 100%);
+}
+
+.comment {
+    color: #a0a0a0;
+}
+
+.mycard {
+    background: #4B4A49;
+    box-shadow: inset 0px 0px 15px rgba(206, 200, 197, 0.25);
+    border-radius: 20px;
+    border: none;
+}
+
+.mybtn {
+    background-color: white;
+    border-radius: 18px;
+    color: #FF9800;
+    font-weight: bold;
+    box-shadow: 0px 1px 10px rgba(0, 0, 0, 0.25);
+}
+
+.profile-card {
+    background-color: #141414;
+    border-radius: 20px;
+    border: none;
+}
+
+.icon50 {
+    height: 50px;
+    width: 50px;
+}
+
+.list-group-item {
+    background-color: transparent;
+    border: none;
+}
+
+.inpt {
+    background-color: transparent;
+    color: white;
+    border: none;
+}
+
+    .inpt:focus {
+        background-color: #ff6a00;
+        border-radius: 20px !important;
+        color: white;
+        box-shadow: none;
+    }
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background-color: rgb(25, 255, 255, 0);
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgb(47 47 47);
+    border-radius: 5px;
+}
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: #141414;
+    }

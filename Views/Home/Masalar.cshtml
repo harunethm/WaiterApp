@@ -1,0 +1,307 @@
+﻿@using WaiterApp.Models.DAL
+@using WaiterApp.Models.Model
+@{
+    ViewBag.Title = "Masalar";
+    ViewBag.active = "masalar";
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+    List<table> tables = ViewBag.tables;
+    List<reservation> reservations = ViewBag.reservations;
+    reservation reservation = null;
+
+
+    List<TablesPage> tablesPages = ViewBag.TablesPages;
+
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-10 col-lg-8">
+            <div class="accordion" id="tables">
+                <form action="@Url.Action("Masalar", "Home")" method="post">
+                    @foreach (var table in tablesPages)
+                    {
+                        <div class="card mycard d-block my-2">
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col-2 align-items-center">
+                                        <button type="button" class="btn bg-transparent" data-toggle="collapse" data-target="#collapse@(table.table.ID)">
+                                            <img src="~/Belgeler/Images/dinner-table.png" class="icon50" />
+                                            <span class="text-white-50">
+                                                Siparişler
+                                            </span>
+                                        </button>
+                                    </div>
+                                    <div class="col-7">
+                                        <div class="row">
+                                            <h5>@table.table.tableName</h5>
+                                        </div>
+                                        <div class="row">
+                                            @switch (table.table.availability)
+                                            {
+                                                case 1:
+                                                    <span class="badge-pill badge-info">
+                                                        Boş
+                                                    </span>
+                                                    break;
+                                                case 2:
+                                                    <span class="badge-pill badge-success">
+                                                        Dolu
+                                                    </span>
+                                                    break;
+                                                case 3:
+                                                    <span class="badge-pill badge-danger">
+                                                        Rezerve
+                                                    </span>
+                                                    break;
+                                                default:
+                                                    break;
+                                            }
+                                        </div>
+                                    </div>
+                                    <div class="col-3 text-left align-items-center">
+                                        @if (table.table.availability == 1)
+                                        {
+                                            <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#modalreservation"
+                                                    data-tableid="@table.table.ID"
+                                                    data-tablename="@table.table.tableName">
+                                                Rezerve Et
+                                                <i class="fas fa-chevron-right ml-1"></i>
+                                            </button>
+                                        }
+                                        @if (table.table.availability == 2)
+                                        {
+                                            <h5>
+                                                @(Convert.ToDouble(table.table.balance).ToString("F")) TL
+                                            </h5>
+                                            <button type="submit" class="btn btn-outline-success" name="tableID" value="@table.table.ID">
+                                                Ödeme Al
+                                                <i class="fas fa-chevron-right ml-1"></i>
+                                            </button>
+                                        }
+                                        @if (table.table.availability == 3 && table.reservation != null)
+                                        {
+                                            <button type="button" class="btn btn-outline-info" data-toggle="modal" data-target="#modalinfo"
+                                                    data-tablename="@table.table.tableName"
+                                                    data-reservationid="@table.reservation.ID"
+                                                    data-name="@table.reservation.name"
+                                                    data-phonenumber="@table.reservation.phoneNumber"
+                                                    data-reservationdate="@table.reservation.reservationDate.ToString()"
+                                                    data-numberofpeople="@table.reservation.numberOfPeople">
+                                                Bilgi Al
+                                                <i class="fas fa-chevron-right ml-1"></i>
+                                            </button>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+
+                            @if (table.orders != null && table.orders.Count > 0)
+                            {
+                                <div id="collapse@(table.table.ID)" class="collapse" data-parent="#tables">
+                                    <div class="card mycard m-3">
+                                        <div class="card-body">
+                                            <ul class="list-group ">
+                                                <li class="list-group-item">
+                                                    <div class="row">
+                                                        <div class="col-6">
+                                                            Adı
+                                                        </div>
+                                                        <div class="col-3 text-center">
+                                                            Adedi
+                                                        </div>
+                                                        <div class="col-3 text-right">
+                                                            Birim Fiyatı
+                                                        </div>
+                                                    </div>
+                                                </li>
+
+                                                @foreach (var order in table.orders)
+                                                {
+
+                                                    <li class="list-group-item">
+                                                        <div class="row">
+                                                            <div class="col-6">
+                                                                @order.product.name
+                                                            </div>
+                                                            <div class="col-3 comment text-center ">
+                                                                @(order.amount - order.paidAmount) Adet
+                                                            </div>
+                                                            <div class="col-3 text-right">
+                                                                @order.product.price.ToString("F") TL
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                }
+                                                <li class="list-group-item">
+                                                    <div class="row">
+                                                        <div class="col text-right">
+                                                            <span class="comment">
+                                                                Genel Toplam:
+                                                            </span>
+                                                            @table.orders.Sum(x => x.product.price * (x.amount - x.paidAmount)).ToString("F") TL
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalinfo" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content mycard">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalinfotitle"></h5>
+            </div>
+            <div class="modal-body text-black">
+                <h6 class="font-weight-bold">Rezerve Edenin Adı Soyadı</h6>
+                <span id="name"></span>
+                <hr />
+                <h6>Telefon Numarası</h6>
+                <span id="phonenumber"></span>
+                <hr />
+                <h6>Rezerve Edilen Tarih ve Saat</h6>
+                <span id="reservationdate"></span>
+                <hr />
+                <h6>Kaç Kişilik Rezervasyon</h6>
+                <span id="numberofpeople"></span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="reservationCancel" data-reservationid="">Rezervasyonu İptal Et</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalreservation" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content mycard">
+            <div class="modal-header">
+                <h4 class="modal-title" id="modalreservationtitle"></h4>
+            </div>
+            <div class="modal-body text-black">
+                <span class="has-error" id="reservationError"></span>
+                <div class="form-group">
+                    <label for="inputName">Ad Soyad*</label>
+                    <input type="text" class="form-control" id="inputName" name="inputName" placeholder="Rezerve eden kişinin adı soyadı." data-deneme="deneme">
+                </div>
+                <div class="form-group">
+                    <label for="inputPhoneNumber">Telefon Numarası*</label>
+                    <input type="text" class="form-control" id="inputPhoneNumber" name="inputPhoneNumber" value="+905">
+                </div>
+                <div class="form-group">
+                    <label for="inputReservationDate">Rezervasyon Tarihi*</label>
+                    <input type="date" class="form-control" id="inputReservationDate" name="inputReservationDate">
+                </div>
+                <div class="form-group">
+                    <label for="inputReservationTime">Rezervasyon Saati*</label>
+                    <input type="time" class="form-control" id="inputReservationTime" name="inputReservationTime">
+                </div>
+                <div class="form-group">
+                    <label for="inputNumberOfPeople">Gelecek Kişi Sayısı*</label>
+                    <input type="number" class="form-control" id="inputNumberOfPeople" value="4" name="inputNumberOfPeople">
+                </div>
+                <small class="form-text text-muted">Yıldızlı alanların doldurulması zorunludur.</small>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-danger" data-dismiss="modal">İptal</button>
+                <button type="button" id="btnRezerveEt" name="btnRezerveEt" class="btn btn-primary" data-tableid="">Rezerve Et</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $(document).on('shown.bs.modal', '#modalinfo', function (event) {
+
+                var button = $(event.relatedTarget);
+                var reservationID = button.data('reservationid');
+                var tablename = button.data('tablename');
+                var name = button.data('name');
+                var phone = button.data('phonenumber');
+                var reservationdate = button.data('reservationdate');
+                var numberofpeople = button.data('numberofpeople');
+
+                var modal = $('#modalinfo');
+                modal.find('.modal-header #modalinfotitle').text('' + tablename);
+                modal.find('.modal-body #name').text(name);
+                modal.find('.modal-body #phonenumber').text(phone);
+                modal.find('.modal-body #reservationdate').text(reservationdate);
+                modal.find('.modal-body #numberofpeople').text(numberofpeople);
+                modal.find('.modal-footer #reservationCancel').data('reservationid', reservationID);
+            });
+
+            $(document).on('shown.bs.modal', '#modalreservation', function (event) {
+
+                var button = $(event.relatedTarget);
+                var tableID = button.data('tableid');
+                var tableName = button.data('tablename');
+
+                var modal = $('#modalreservation');
+
+                modal.find('.modal-footer #btnRezerveEt').data('tableid', tableID + "");
+                modal.find('.modal-header #modalreservationtitle').text('Rezervasyon - ' + tableName + '');
+            });
+
+            $('#btnRezerveEt').on('click', function (event) {
+
+                $('#reservationError').text('');
+
+                var tableID = $('.modal-footer #btnRezerveEt').data('tableid');
+                var name = $('.modal-body #inputName').val();
+                var phoneNumber = $('.modal-body #inputPhoneNumber').val();
+                var reservationDate = $('.modal-body #inputReservationDate').val();
+                var reservationTime = $('.modal-body #inputReservationTime').val();
+                var numberOfPeople = $('.modal-body #inputNumberOfPeople').val();
+
+                var url = '@Url.Action("RezerveEt","Home")';
+                var data = 'tableID:"' + tableID + '",name:"' + name + '",phoneNumber:"' + phoneNumber + '",reservationDate:"' + reservationDate + '",reservationTime:"' + reservationTime + '",numberOfPeople:"' + numberOfPeople + '"';
+
+                myajax(url, data, function (e) {
+                    if (e.confirm) {
+                        location.reload();
+                    }
+                    else {
+                        $('#reservationError').text(e.errorMessage);
+                    }
+                }, function (e) {
+                    //$('.modal.show').modal('hide');
+                    alert(e.errorMessage);
+                });
+            });
+
+            $('#reservationCancel').on('click', function (event) {
+
+                var reservationID = $(this).data('reservationid');
+                var url = '@Url.Action("RezervasyonIptal", "Home")';
+                var data = 'reservationID:"' + reservationID + '"';
+
+                myajax(url, data, function (e) {
+                    if (e.confirm) {
+                        location.reload();
+                    }
+                    else {
+                        $('#reservationError').text(e.errorMessage);
+                    }
+                }, function (e) {
+                    //$('.modal.show').modal('hide');
+                    alert(e.errorMessage);
+                });
+
+            });
+        });
+
+    </script>
+}
