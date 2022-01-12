@@ -23,7 +23,7 @@ namespace WaiterApp.Models.DAL
         public int ID { get; set; }
         public string name { get; set; }
         public int authorityLevel { get; set; }
-        public int status { get; set; }
+        public bool status { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<user> users { get; set; }
