@@ -1,0 +1,57 @@
+﻿@using WaiterApp.Models.DAL
+@{
+    ViewBag.Title = "Reservations";
+    ViewBag.active = "reservations";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
+    List<reservation> reservations = ViewBag.reservations;
+    var list = reservations.GroupBy(x => x.status).OrderByDescending(x => x.FirstOrDefault().status);
+}
+
+<h2>Rezervasyonlar</h2>
+
+
+<div class="row">
+    <div class="col">
+        @foreach (var item in list)
+        {
+            <div class="card">
+                <div class="card-header">
+                    <p class="card-category">Tarih</p>
+                    <h4 class="card-title d-inline">@(item.FirstOrDefault().status ? "Aktif" : "Geçmiş")</h4>
+                    <div class="info"></div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <p class="card-category">Ürün</p>
+                        <table class="table">
+                            <thead class="text-primary">
+                                <tr>
+                                    <th class="text-left">İsim</th>
+                                    <th class="text-center">Telefon Numarası</th>
+                                    <th class="text-center">Rezervasyonun Alındığı Tarih</th>
+                                    <th class="text-center">Rezerve Edilen Tarih - Saat</th>
+                                    <th class="text-center">Kişi Sayısı</th>
+                                    <th class="text-center">Durum</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var reservation in item)
+                                {
+                                    <tr>
+                                        <td class="text-left">@reservation.name</td>
+                                        <td class="text-center">@reservation.phoneNumber</td>
+                                        <td class="text-center">@(reservation.dateTimeNow?.ToString("g"))</td>
+                                        <td class="text-center">@(reservation.reservationDate.ToString("g"))</td>
+                                        <td class="text-center">@(reservation.numberOfPeople) kişi</td>
+                                        <td class="text-center">@(reservation.status ? "Aktif" : "Geçmiş")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
