@@ -1,0 +1,239 @@
+﻿@using WaiterApp.Models.Model
+@{
+    ViewBag.Title = "Tables";
+    ViewBag.Active = "tables";
+
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    List<mTable> mTables = ViewBag.mTables;
+    mTables = mTables.OrderBy(x => x.tableName).ToList();
+    string jsonTables = Newtonsoft.Json.JsonConvert.SerializeObject(mTables);
+}
+
+<h2>Tables</h2>
+
+
+<div class="row">
+    <div class="col-8 col-md-8">
+        <div class="myerror">
+
+        </div>
+        <div id="tables">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title d-inline">Kategoriler</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead class="text-primary">
+                                <tr>
+                                    <th class="text-left" width="35%">Adı</th>
+                                    <th class="text-center" width="15%">Sandalye Sayısı</th>
+                                    <th class="text-center" width="20%">Meşguliyet</th>
+                                    <th class="text-center" width="15%">Hesap</th>
+                                    <th class="text-center" width="10%">Durum</th>
+                                    <th class="text-right" width="5%">#</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var menuItem in mTables)
+                                {
+                                    <tr>
+                                        <td class="text-left">@menuItem.tableName</td>
+                                        <td class="text-center">@menuItem.numberOfChairs</td>
+                                        <td class="text-center">
+                                            @switch (menuItem.availability)
+                                            {
+                                                case 1:
+                                                    <span class="badge-pill badge-info">
+                                                        Boş
+                                                    </span>
+                                                    break;
+                                                case 2:
+                                                    <span class="badge-pill badge-success">
+                                                        Dolu
+                                                    </span>
+                                                    break;
+                                                case 3:
+                                                    <span class="badge-pill badge-danger">
+                                                        Rezerve
+                                                    </span>
+                                                    break;
+                                                default:
+                                                    break;
+                                            }
+                                        </td>
+                                        <td class="text-center">@(menuItem.balance?.ToString("F") ?? "0,00") TL</td>
+                                        <td class="text-center">
+                                            <div class="badge-pill badgeStatus @(menuItem.status ? "badge-success" : "badge-danger")" data-tid="@menuItem.ID" data-status="@menuItem.status">
+                                                @(menuItem.status ? "Aktif" : "Pasif")
+                                            </div>
+                                        </td>
+                                        <td class="text-right">
+                                            <i class="tim-icons icon-pencil edit" data-tid="@menuItem.ID"></i>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-4 col-md-4">
+        <div class="sticky-top" style="top:70px">
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label>Ad</label>
+                        <input type="text" class="form-control" placeholder="Masa adı" id="inputName">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label>Sandalye Sayısı</label>
+                        <input type="number" class="form-control" placeholder="Sandalye sayısı" id="inputNumberOfChairs">
+                    </div>
+                </div>
+            </div>
+            <div class="row justify-content-around">
+                <button type="button" class="btn btn-danger" id="btnCancel">
+                    <i class="tim-icons icon-simple-remove"></i>
+                </button>
+                <button type="button" class="btn btn-primary add" id="btnConfirm" data-tid="0" data-status="true">
+                    <i class="tim-icons icon-simple-add"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $('.edit').on('click', function () {
+                // ürünü sağ menüye doldur
+                // butonu artıdan tik e çevir
+                var tid = $(this).data('tid');
+                var table = findTable(tid);
+
+                $('#inputName').val(table['tableName']);
+                $('#inputNumberOfChairs').val(table['numberOfChairs']);
+
+                $('#btnConfirm').data('tid', tid);
+                $('#btnConfirm').data('status', table['status']);
+
+                btnAddToEdit();
+            });
+
+            $('.badgeStatus').on('dblclick', function () {
+                var badge = $(this);
+                var tid = badge.data('tid');
+                var status = badge.data('status') == "False" ? true : false;
+
+                changeStatus(tid, status);
+
+                // pid ile ürünün durumunu tersine çevir, eğer kategorisinin statusu false ise true yap
+            });
+
+            $('#btnCancel').on('click', function () {
+                // sağ menüdeki alanları sıfırla
+                // eğer butonda tik varsa artıya çevir
+
+                btnEditToAdd();
+
+                $('#inputName').val("");
+                $('#inputNumberOfChairs').val("");
+
+                $('#btnConfirm').data('tid', 0);
+                $('#btnConfirm').data('status', true);
+
+            });
+
+            $('#btnConfirm').on('click', function () {
+                // eğer var olan ürün düzenlendiyse update yap
+                // eğer yeni ürün eklendiyse ekleme yap
+                var btn = $(this);
+                var tid = btn.data('tid');
+                var name = $('#inputName').val();
+                var numberOfChairs = $('#inputNumberOfChairs').val();
+                var status = btn.data('status');
+
+                addupdate(tid, name, numberOfChairs, status);
+            });
+
+
+        });
+
+        function addupdate(tid, name, numberOfChairs, status) {
+
+            var data = 'ID:' + tid + ',numberOfChairs:' + numberOfChairs + ',name:"' + name + '",status:"' + status + '"';
+            var url = '@Url.Action("AddUpdateTable", "Admin")';
+
+            myajax(url, data, function (e) {
+                if (e.confirm) {
+                    window.location.reload();
+                }
+                else {
+                    setError(e.errorMessage)
+                }
+            }, function (e) {
+                setError(e);
+            });
+        }
+
+        function changeStatus(tid, status) {
+
+            var data = 'ID:' + tid + ',status:"' + status + '"';
+            var url = '@Url.Action("ChangeTableStatus", "Admin")';
+
+            myajax(url, data, function (e) {
+                if (e.confirm) {
+                    window.location.reload();
+                }
+                else {
+                    setError(e.errorMessage)
+                }
+            }, function (e) {
+                setError(e);
+            });
+        }
+
+
+        function btnAddToEdit() {
+            $('#btnConfirm').removeClass('add').addClass('edit');
+            $('#btnConfirm i.tim-icons').removeClass('icon-simple-add').addClass('icon-check-2');
+        }
+
+        function btnEditToAdd() {
+            $('#btnConfirm').removeClass('edit').addClass('add');
+            $('#btnConfirm i.tim-icons').removeClass('icon-check-2').addClass('icon-simple-add');
+        }
+
+        function setError(errorMessage) {
+            var error = '<div class="alert alert-danger">'+
+               '<button type="button" aria-hidden="true" class="close" data-dismiss="alert" >'+
+                   '<i class="tim-icons icon-simple-remove"></i>'+
+               '</button >'+
+               '<span><b> Hata - </b>' + errorMessage + '</span>'+
+                '</div >'
+            $('.myerror').html(error);
+        }
+
+        function findTable(tid) {
+            var jsonTables = @Html.Raw(jsonTables);
+            //console.log(jsonTables);
+
+
+            for (var i = 0; i < jsonTables.length; i++) {
+                if (jsonTables[i]['ID'] == tid)
+                    return jsonTables[i];
+            }
+        }
+    </script>
+}

@@ -1,0 +1,120 @@
+﻿@using WaiterApp.Models.Model
+@{
+    Layout = null;
+    mReceipt mReceipt = ViewBag.receipt;
+    mTable mTable = ViewBag.table;
+    List<mOrder> mOrders = ViewBag.orders;
+    string waiterName = ViewBag.waiter;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Masa Bilgisi</title>
+    <link href="~/Belgeler/CSS/NormalizeCss.css" rel="stylesheet" />
+    <link href="~/Belgeler/Bootstrap/bootstrap-4.6.1-dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+    <link href="~/Belgeler/CSS/MyCss.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="container container-fluid mt-3">
+        <div class="row">
+            <div class="col-12 col-md-4">
+                <div class="card mycard">
+                    <div class="card-header text-center">
+                        <h4>@mTable.tableName</h4>
+                    </div>
+                    <div class="card-body">
+                        <span>Açılış Zamanı</span>
+                        <br />
+                        <span class="comment">@mReceipt.openingTime</span>
+                        <br />
+                        <span>Garson</span>
+                        <br />
+                        <span class="comment">@waiterName</span>
+
+                        <br />
+                        <br />
+                        <span>Genel Toplam:</span>
+                        <span class="comment">@mOrders.Sum(x => (x.amount) * x.product.price).ToString("F") TL</span>
+                        <br />
+                        <span>Ödenen Toplam:</span>
+                        <span class="comment">@mOrders.Sum(x => (x.paidAmount) * x.product.price).ToString("F") TL</span>
+                        <br />
+                        <span>Kalan Toplam:</span>
+                        <span class="comment">@mOrders.Sum(x => (x.amount - x.paidAmount) * x.product.price).ToString("F") TL</span>
+                        <br />
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-8">
+                <div class="card mycard">
+                    @if (mOrders != null && mOrders.Count > 0)
+                    {
+                        <div class="card-header text-center">
+                            <h4>Siparişler</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-2 border-bottom">
+                                <div class="col-2">Adı</div>
+                                <div class="col-2">Sipariş Durumu</div>
+                                <div class="col-2 text-center">Adedi</div>
+                                <div class="col-2 text-center">Ödenen Adet</div>
+                                <div class="col-2 text-center">Birim Fiyat</div>
+                                <div class="col-2 text-right">Toplam Fiyat</div>
+                            </div>
+                            @foreach (var order in mOrders)
+                            {
+                                <div class="row">
+                                    <div class="col-2">@order.product.name <span class="comment">@order.comment</span></div>
+                                    <div class="col-2">
+                                        @switch (order.status)
+                                        {
+                                            case 1:
+                                                <span class="badge badge-pill badge-primary">Hazırlanıyor</span>
+                                                break;
+                                            case 2:
+                                                <span class="badge badge-pill badge-success">Hazır</span>
+                                                break;
+                                            case 3:
+                                                <span class="badge badge-pill badge-info">Ödendi</span>
+                                                break;
+                                            case 4:
+                                                <span class="badge badge-pill badge-danger">İptal Edildi</span>
+                                                break;
+                                            default:
+                                                break;
+                                        }
+                                    </div>
+                                    <div class="col-2 text-center comment">@(order.amount) adet</div>
+                                    <div class="col-2 text-center comment">@(order.paidAmount) adet</div>
+                                    <div class="col-2 text-center comment">@(order.product.price.ToString("F")) TL</div>
+                                    <div class="col-2 text-right">@((order.product.price * (order.amount - order.paidAmount)).ToString("F")) TL</div>
+                                </div>
+                            }
+                        </div>
+                        @*<div class="card-footer text-right">
+                            <span class="comment">Genel Toplam:</span> <span>@mOrders.Sum(x => (x.amount) * x.product.price).ToString("F") TL</span><br />
+                            <span class="comment border-bottom">Ödenen Toplam:</span> <span class="border-bottom">@mOrders.Sum(x => (x.paidAmount) * x.product.price).ToString("F") TL</span><br />
+                            <span class="comment">Kalan Toplam:</span> <span>@mOrders.Sum(x => (x.amount - x.paidAmount) * x.product.price).ToString("F") TL</span><br />
+                        </div>*@
+                    }
+                    else
+                    {
+                        <div class="card-body text-center">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <br />
+                            <span>Hiç Sipariş Yok!</span>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <script src="~/Belgeler/JS/JQuery/JQuery.js"></script>
+    <script src="~/Belgeler/Bootstrap/bootstrap-4.6.1-dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

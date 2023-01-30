@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="82753887b07f4b85875f551c249fc81c" Name="Diagram1">
+      <Diagram DiagramId="82753887b07f4b85875f551c249fc81c" Name="Diagram1" ZoomLevel="63">
         <EntityTypeShape EntityType="DBWaiterAppModel.category" Width="1.5" PointX="10" PointY="9" IsExpanded="true" />
         <EntityTypeShape EntityType="DBWaiterAppModel.product" Width="1.5" PointX="7.875" PointY="8.5" IsExpanded="true" />
         <EntityTypeShape EntityType="DBWaiterAppModel.receipt" Width="1.5" PointX="5.25" PointY="4.5" IsExpanded="true" />
@@ -13,18 +13,18 @@
         <AssociationConnector Association="DBWaiterAppModel.FK_product_category" ManuallyRouted="false" />
         <AssociationConnector Association="DBWaiterAppModel.FK_takeAway_receipt" ManuallyRouted="false" />
         <EntityTypeShape EntityType="DBWaiterAppModel.reservation" Width="1.5" PointX="7.75" PointY="0.75" />
-        <EntityTypeShape EntityType="DBWaiterAppModel.role" Width="1.5" PointX="0.75" PointY="5.25" />
         <EntityTypeShape EntityType="DBWaiterAppModel.table" Width="1.5" PointX="5.25" PointY="1" />
         <AssociationConnector Association="DBWaiterAppModel.FK_receipt_table" />
         <AssociationConnector Association="DBWaiterAppModel.FK_reservation_table" />
         <EntityTypeShape EntityType="DBWaiterAppModel.payment" Width="1.5" PointX="9.75" PointY="4.625" />
-        <EntityTypeShape EntityType="DBWaiterAppModel.order" Width="1.5" PointX="7.5" PointY="4.5" />
-        <AssociationConnector Association="DBWaiterAppModel.FK_order_product" />
-        <AssociationConnector Association="DBWaiterAppModel.FK_order_receipt" />
-        <AssociationConnector Association="DBWaiterAppModel.FK_payment_order" />
+        <EntityTypeShape EntityType="DBWaiterAppModel.role" Width="1.5" PointX="0.75" PointY="5.25" />
         <EntityTypeShape EntityType="DBWaiterAppModel.user" Width="1.5" PointX="3" PointY="4.625" />
         <AssociationConnector Association="DBWaiterAppModel.FK_receipt_user" />
         <AssociationConnector Association="DBWaiterAppModel.FK_user_role" />
+        <EntityTypeShape EntityType="DBWaiterAppModel.order" Width="1.5" PointX="7.625" PointY="4.75" />
+        <AssociationConnector Association="DBWaiterAppModel.FK_order_product" />
+        <AssociationConnector Association="DBWaiterAppModel.FK_order_receipt" />
+        <AssociationConnector Association="DBWaiterAppModel.FK_payment_order" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

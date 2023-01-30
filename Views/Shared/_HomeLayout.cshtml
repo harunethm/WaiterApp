@@ -2,7 +2,11 @@
 
 <html>
 <head>
-    <meta name="viewport" content="width=device-width" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="apple-touch-icon" sizes="76x76" href="~/Belgeler/Images/restaurant.png">
+    <link rel="icon" type="image/png" href="~/Belgeler/Images/restaurant.png">
+
     <title>@ViewBag.Title</title>
 
     <link href="~/Belgeler/CSS/NormalizeCss.css" rel="stylesheet" />
@@ -27,11 +31,11 @@
                 <img src="~/Belgeler/Images/restaurant.png" class="logo mx-2" />
                 WaiterApp
             </a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mynavbar" aria-expanded="false">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
-            <div class="collapse navbar-collapse" id="mynavbar">
+            <div class="collapse navbar-collapse" id="navbar">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item @(ViewBag.active == "menu" ? "active" : "")">
                         <a class="nav-link" href="@Url.Action("Menu", "Home")">Menü</a>
@@ -53,7 +57,7 @@
                 </ul>
                 <a class="" href="@Url.Action("Index", "Profile")">
                     <i class="fas fa-user"></i>
-                    @ViewBag.user.name @ViewBag.user.surname
+                    @(ViewBag.user != null ? ViewBag.user.name + " " + ViewBag.user.surname : "")
                 </a>
             </div>
         </div>
@@ -68,6 +72,9 @@
             background-blend-mode: color;
             mix-blend-mode: darken;
             filter: drop-shadow(0px 0px 10px #ffffff);
+        }
+        .collapsing, .collapse.show  {
+            text-align:right;
         }
     </style>
 

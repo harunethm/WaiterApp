@@ -72,16 +72,6 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="roles">
-      <EntityTypeMapping TypeName="DBWaiterAppModel.role">
-        <MappingFragment StoreEntitySet="role">
-          <ScalarProperty Name="status" ColumnName="status" />
-          <ScalarProperty Name="authorityLevel" ColumnName="authorityLevel" />
-          <ScalarProperty Name="name" ColumnName="name" />
-          <ScalarProperty Name="ID" ColumnName="ID" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
     <EntitySetMapping Name="tables">
       <EntityTypeMapping TypeName="DBWaiterAppModel.table">
         <MappingFragment StoreEntitySet="table">
@@ -107,15 +97,12 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="orders">
-      <EntityTypeMapping TypeName="DBWaiterAppModel.order">
-        <MappingFragment StoreEntitySet="order">
+    <EntitySetMapping Name="roles">
+      <EntityTypeMapping TypeName="DBWaiterAppModel.role">
+        <MappingFragment StoreEntitySet="role">
           <ScalarProperty Name="status" ColumnName="status" />
-          <ScalarProperty Name="comment" ColumnName="comment" />
-          <ScalarProperty Name="paidAmount" ColumnName="paidAmount" />
-          <ScalarProperty Name="amount" ColumnName="amount" />
-          <ScalarProperty Name="productID" ColumnName="productID" />
-          <ScalarProperty Name="receiptID" ColumnName="receiptID" />
+          <ScalarProperty Name="authorityLevel" ColumnName="authorityLevel" />
+          <ScalarProperty Name="name" ColumnName="name" />
           <ScalarProperty Name="ID" ColumnName="ID" />
         </MappingFragment>
       </EntityTypeMapping>
@@ -132,6 +119,19 @@
           <ScalarProperty Name="surname" ColumnName="surname" />
           <ScalarProperty Name="name" ColumnName="name" />
           <ScalarProperty Name="profilePicture" ColumnName="profilePicture" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="orders">
+      <EntityTypeMapping TypeName="DBWaiterAppModel.order">
+        <MappingFragment StoreEntitySet="order">
+          <ScalarProperty Name="status" ColumnName="status" />
+          <ScalarProperty Name="comment" ColumnName="comment" />
+          <ScalarProperty Name="paidAmount" ColumnName="paidAmount" />
+          <ScalarProperty Name="amount" ColumnName="amount" />
+          <ScalarProperty Name="productID" ColumnName="productID" />
+          <ScalarProperty Name="receiptID" ColumnName="receiptID" />
           <ScalarProperty Name="ID" ColumnName="ID" />
         </MappingFragment>
       </EntityTypeMapping>

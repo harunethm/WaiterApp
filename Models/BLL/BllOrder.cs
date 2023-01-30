@@ -11,21 +11,27 @@ namespace WaiterApp.Models.BLL
     {
         public List<order> GetOrders()
         {
-            return GetAll(x => x.status == true);
+            return GetAll();
         }
+
+        public List<order> GetOrdersForOrdersPage()
+        {
+            return GetAll(x => x.receipt.status && (x.status == 1 || x.status == 2));
+        }
+
         public order GetOrder(int orderID)
         {
-            return GetAll(x => x.status == true && x.ID == orderID).FirstOrDefault();
+            return GetAll(x => x.ID == orderID).FirstOrDefault();
         }
 
         public List<order> GetOrdersByOrderIDandProductID(int orderID, int productID)
         {
-            return GetAll(x => x.status == true && x.ID == orderID && x.productID == productID);
+            return GetAll(x => x.ID == orderID && x.productID == productID);
         }
 
         public List<order> GetOrdersByReceiptID(int receiptID)
         {
-            return GetAll(x => x.status == true && x.receiptID == receiptID);
+            return GetAll(x => x.receiptID == receiptID);
         }
         public List<order> GetOrdersByTableID(int tableID)
         {
@@ -50,6 +56,18 @@ namespace WaiterApp.Models.BLL
             List<order> orders = GetOrdersByReceiptID(receipt.ID);
             return ToModel(orders);
         }
+        public bool isAllPaid(int receiptID)
+        {
+            List<order> orders = GetOrdersByReceiptID(receiptID);
+            foreach (var item in orders)
+            {
+                if(item.status == 1 || item.status == 2)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
 
         public bool UpdateOrder(mOrder mOrder)
         {
@@ -67,13 +85,13 @@ namespace WaiterApp.Models.BLL
                 UpdateOnly(order);
                 return true;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return false;
             }
         }
 
-        private List<mOrder> ToModel(List<order> orders)
+        public List<mOrder> ToModel(List<order> orders)
         {
             List<mOrder> mOrders = new List<mOrder>();
             foreach (var order in orders)

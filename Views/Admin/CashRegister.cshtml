@@ -1,0 +1,75 @@
+﻿@using WaiterApp.Models.DAL
+@{
+    ViewBag.Title = "CashRegister";
+    ViewBag.active = "cashRegisters";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
+    List<IGrouping<DateTime, payment>> payments = ViewBag.payments;
+}
+
+<h2>Kasa</h2>
+
+<div class="row">
+    <div class="col">
+        @foreach (var item in payments)
+        {
+            <div class="card">
+                <div class="card-header">
+                    <p class="card-category">Tarih</p>
+                    <h4 class="card-title d-inline">@(item.FirstOrDefault().dateTime?.ToString("d"))</h4>
+                    <div class="info"></div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <p class="card-category">Ürün</p>
+                        <table class="table">
+                            <thead class="text-primary">
+                                <tr>
+                                    <th class="text-left">Sipariş ID</th>
+                                    <th class="text-center">Ürün Adı</th>
+                                    <th class="text-center">Ödenen Adet</th>
+                                    <th class="text-center">Birim Fiyatı</th>
+                                    <th class="text-center">Ödenecek Tutar</th>
+                                    <th class="text-center">İndirim Miktarı</th>
+                                    <th class="text-center">Ödenen Fiyat</th>
+                                    <th class="text-right">Ödeme Yöntemi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var payment in item)
+                                {
+                                    <tr>
+                                        <td class="text-left">@payment.orderID</td>
+                                        <td class="text-center">@payment.order.product.name</td>
+                                        <td class="text-center">@payment.paidAmount</td>
+                                        <td class="text-center">@payment.order.product.price.ToString("F") TL</td>
+                                        <td class="text-center">@(payment.discountAmount?.ToString("F")) TL</td>
+                                        <td class="text-center">@(payment.discountAmount?.ToString("F")) TL</td>
+                                        <td class="text-center">@((payment.paidAmount * payment.order.product.price - payment.discountAmount)?.ToString("F")) TL</td>
+                                        <td class="text-right">@(payment.paymentMethod == 1 ? "Kredi Kartı" : "Nakit")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section styles {
+    <style type="text/css">
+        .table-responsive {
+            padding-bottom: 0px;
+        }
+    </style>
+}
+
+@section scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.card').first().find('.info').addClass('badge badge-info').html('Bugün');
+        })
+    </script>
+}

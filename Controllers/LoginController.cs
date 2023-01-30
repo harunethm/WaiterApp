@@ -18,23 +18,25 @@ namespace WaiterApp.Controllers
         }
 
         [HttpPost]
-        public ActionResult Index(string userName, string password)
+        public ActionResult Index(string userName, string password, string rememberMe, string returnUrl = "")
         {
             BllUser blluser = new BllUser();
-            int ID = blluser.IsUserValid(@userName, password);
+            int ID = blluser.IsUserValid(@userName, @password);
             if (ID > 0)
             {
                 BllOrtak.Sessions.ID = ID;
                 BllOrtak.Sessions.name = userName;
                 BllOrtak.Sessions.roleID = blluser.GetUserByID(ID).roleID;
-                FormsAuthentication.SetAuthCookie(ID.ToString(), false);
-                return RedirectToAction("Menu", "Home");
+                FormsAuthentication.SetAuthCookie(ID.ToString(), rememberMe == "on");
+                if (returnUrl.IsNullOrEmpty())
+                    return RedirectToAction("Menu", "Home");
+                else
+                    return Redirect(returnUrl);
             }
-            return View();
+            return View(new { error = "Kullanıcı bulunamadı." });
         }
 
 
-        [Authorize]
         public JsonResult LogOut()
         {
             BllOrtak.Sessions.Clear();

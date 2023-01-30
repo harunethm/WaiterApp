@@ -7,57 +7,79 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-12 col-md-10 col-lg-8">
-            <div class="card profile-card">
-                <div class="card-header text-center">
-                    <img src="@(user.profilePicture ?? "/Belgeler/Images/user.png")" class="profilePicture" />
-                </div>
-                <div class="card-body">
-                    <div class="alert alert-danger" role="alert">
-                        Lütfen bilgilerin tam olduğundan emin olun.
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+            @if (user != null)
+            {
+                <div class="card mycard p-3">
+                    <div class="card-header text-center">
+                        <img src="@(user.profilePicture ?? "/Belgeler/Images/user.png")" class="profilePicture" />
                     </div>
-                    <div class="form-group">
-                        <label for="name" class="control-label">İsim</label>
-                        <input type="text" name="name" class="form-control" value="@(user != null ? user.name : "")" id="name" />
-                    </div>
-                    <div class="form-group">
-                        <label for="surName" class="control-label">Soyisim</label>
-                        <input type="text" name="surName" class="form-control" value="@(user != null ? user.surname : "")" id="surName" />
-                    </div>
-                    <div class="form-group">
-                        <label for="eMail" class="control-label">E-Mail</label>
-                        <input type="email" name="eMail" class="form-control" value="@(user != null ? user.eMail : "")" id="eMail" />
-                    </div>
-                    <div class="form-group">
-                        <label for="phoneNumber" class="control-label">Telefon Numarası</label>
-                        <input type="number" name="phoneNumber" class="form-control" value="@(user != null ? user.phoneNumber  : "")" id="phoneNumber" />
-                    </div>
-                    <div class="form-group">
-                        <label for="password" class="control-label">Şifre</label>
-                        <input type="password" name="password" class="form-control" value="@(user != null ? user.password : "")" id="password" />
-                    </div>
-                    <div class="form-group">
-                        <label for="passwordRepeat" class="control-label">Şifre Tekrar</label>
-                        <input type="password" name="passwordRepeat" class="form-control" id="passwordRepeat" />
-                    </div>
-                </div>
-                <div class="card-footer">
-                    <div class="row px-4 text-center">
-                        <div class="col-4">
-                            <button class="btn btn-outline-danger" id="btnBack">Geri</button>
+                    <div class="card-body">
+                        <div class="alert alert-danger" role="alert">
+                            Lütfen bilgilerin tam olduğundan emin olun.
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
                         </div>
-                        <div class="col-4">
-                            <button class="btn btn-danger" id="btnLogOut">Çıkış Yap</button>
+                        <div class="form-group">
+                            <label for="name" class="control-label">İsim</label>
+                            <input type="text" name="name" class="form-control" value="@(user.name)" id="name" />
                         </div>
-                        <div class="col-4">
-                            <button class="btn btn-outline-success" id="btnConfirmChanges">Değişiklikleri Onayla</button>
+                        <div class="form-group">
+                            <label for="surName" class="control-label">Soyisim</label>
+                            <input type="text" name="surName" class="form-control" value="@(user.surname)" id="surName" />
+                        </div>
+                        <div class="form-group">
+                            <label for="eMail" class="control-label">E-Mail</label>
+                            <input type="email" name="eMail" class="form-control" value="@(user .eMail)" id="eMail" />
+                        </div>
+                        <div class="form-group">
+                            <label for="phoneNumber" class="control-label">Telefon Numarası</label>
+                            <input type="number" name="phoneNumber" class="form-control" value="@(user.phoneNumber)" id="phoneNumber" />
+                        </div>
+                        <div class="form-group">
+                            <label for="password" class="control-label">Şifre</label>
+                            <input type="password" name="password" class="form-control" value="@(user.password)" id="password" />
+                        </div>
+                        <div class="form-group">
+                            <label for="passwordRepeat" class="control-label">Şifre Tekrar</label>
+                            <input type="password" name="passwordRepeat" class="form-control" id="passwordRepeat" />
                         </div>
                     </div>
-                </div>
+                    <div class="card-footer">
+                        <div class="row px-4 text-center">
+                            <div class="col">
+                                <button class="btn btn-outline-danger" id="btnBack">Geri</button>
+                            </div>
+                            <div class="col">
+                                <button class="btn btn-danger" id="btnLogOut">Çıkış Yap</button>
+                            </div>
+                            <div class="col" @(user.roleID != 1 ? "hidden" : "")>
+                                <button class="btn btn-primary" id="btnAdminPanel" @(user.roleID != 1 ? "disabled" : "")>Admin Paneli</button>
+                            </div>
+                            <div class="col">
+                                <button class="btn btn-outline-success" id="btnConfirmChanges">Kaydet</button>
+                            </div>
+                        </div>
+                    </div>
 
-            </div>
+                </div>
+            }
+            else
+            {
+                <div class="card profile-card">
+                    <div class="card profile-card">
+                        <div class="card-header text-center">
+                            Bir terslik oldu !!!
+                        </div>
+                        <div class="card-body">
+                            Kullanıcı bulunamadı ...
+                        </div>
+                        <div class="card-footer">
+                            <a href="@Url.Action("Index", "Login")">Giriş sayfasına git.</a>
+                        </div>
+                    </div>
+                </div>
+            }
         </div>
     </div>
 </div>
@@ -87,6 +109,10 @@
                     history.go(-1);
                 else
                     window.location.href = "@Url.Action("Menu", "Home")";
+            });
+
+            $('#btnAdminPanel').on('click', function () {
+                window.location.href = '@Url.Action("Products", "Admin")';
             });
 
             $('#btnLogOut').on('click', function () {

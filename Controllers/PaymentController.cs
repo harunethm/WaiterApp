@@ -26,7 +26,7 @@ namespace WaiterApp.Controllers
 
                 if (_table != null && _table.availability > 1)
                 {
-                    List<mOrder> orders = new BllOrder().GetmOrdersByTableID(tableID);
+                    List<mOrder> orders = new BllOrder().GetmOrdersByTableID(tableID).Where(x => x.status == 2).ToList();
                     foreach (var order in orders)
                         order.receipt = null;
                     ViewBag.orders = orders;
@@ -47,6 +47,10 @@ namespace WaiterApp.Controllers
             BllOrder bllOrder = new BllOrder();
             BllPayment bllPayment = new BllPayment();
             BllTable bllTable = new BllTable();
+            BllReceipt bllReceipt = new BllReceipt();
+
+            // TODO eğer tüm siparişler ödendiyse masayı ve receipt ı kapat
+
 
             try
             {
@@ -58,14 +62,14 @@ namespace WaiterApp.Controllers
                     decimal discountAmount = Convert.ToDecimal(discount);
                     decimal total = paid * item.FirstOrDefault().product.price;
 
-                    if (discountAmount > total)
-                        discountAmount = total;
+                    //if (discountAmount > total)
+                    //    discountAmount = total;
 
                     mOrder = new mOrder(bllOrder.GetOrder(orderID));
 
                     mOrder.paidAmount += paid;
                     if (mOrder.amount == mOrder.paidAmount)
-                        mOrder.status = false;
+                        mOrder.status = 3;
 
                     mPayment = new mPayment
                     {
@@ -79,6 +83,12 @@ namespace WaiterApp.Controllers
 
                     mTable = mOrder.receipt.table;
                     mTable.balance -= total;
+                    
+                    if(mTable.balance == 0)
+                        mTable.availability = 1;
+                    
+                    if (bllOrder.isAllPaid(mOrder.receiptID))
+                        bllReceipt.CloseReceipt(mOrder.receiptID);
 
                     bool updateTable = bllTable.UpdateTable(mTable);
                     bool updateOrder = bllOrder.UpdateOrder(mOrder);

@@ -9,12 +9,12 @@
 
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-12 col-md-10 col-lg-8">
+        <div class="col-12">
             @if (orders != null && orders.Count > 0)
             {
                 foreach (var receiptList in orders.GroupBy(x => x.receiptID))
                 {
-                    <div class="card mycard">
+                    <div class="card mycard mb-3">
                         <div class="card-body">
                             <div class="row justify-content-center">
                                 <h4>
@@ -24,10 +24,12 @@
                             <hr />
                             <div class="row font-weight-bold pb-2">
                                 <div class="col-1">#</div>
-                                <div class="col-5">Adı</div>
+                                <div class="col-3">Adı</div>
+                                <div class="col-1 text-center">Durum</div>
                                 <div class="col-2 text-center">Adedi</div>
                                 <div class="col-2 text-center">Birim Fiyat</div>
-                                <div class="col-2 text-right">Toplam Fiyat</div>
+                                <div class="col-2 text-center">Toplam Fiyat</div>
+                                <div class="col-1 text-right">Hazır</div>
                             </div>
                             <div class="accordion">
                                 @foreach (var order in receiptList)
@@ -36,48 +38,81 @@
                                         <div class="col">
                                             <div class="row">
                                                 <div class="col-1"><i class="btnEditOrder far fa-pencil-alt" data-toggle="collapse" data-target="#collapse@(order.ID)"></i></div>
-                                                <div class="col-5">@order.product.name <span class="comment">@order.comment</span></div>
+                                                <div class="col-3">@order.product.name <span class="comment">@order.comment</span></div>
+                                                <div class="col-1 text-center">
+                                                    @switch (order.status)
+                                                    {
+                                                        case 1:
+                                                            <span class="badge badge-pill badge-primary">Hazırlanıyor</span>
+                                                            break;
+                                                        case 2:
+                                                            <span class="badge badge-pill badge-success">Hazır</span>
+                                                            break;
+                                                        case 3:
+                                                            <span class="badge badge-pill badge-info">Ödendi</span>
+                                                            break;
+                                                        case 4:
+                                                            <span class="badge badge-pill badge-danger">İptal Edildi</span>
+                                                            break;
+                                                        default:
+                                                            break;
+                                                    }
+                                                </div>
                                                 <div class="col-2 text-center comment">@(order.amount - order.paidAmount) adet</div>
                                                 <div class="col-2 text-center comment">@(order.product.price.ToString("F")) TL</div>
-                                                <div class="col-2 text-right">@((order.product.price * (order.amount - order.paidAmount)).ToString("F")) TL</div>
+                                                <div class="col-2 text-center">@((order.product.price * (order.amount - order.paidAmount)).ToString("F")) TL</div>
+                                                <div class="col-1 text-right">
+                                                    <i class="btnSetReady fas fa-check @(order.status != 1 ? "text-muted" : "")" @(order.status != 1 ? "disabled" : "") data-orderid="@order.ID"></i>
+                                                </div>
                                             </div>
                                             <div class="collapse" id="collapse@(order.ID)">
-                                                <div class="row justify-content-center align-items-center pt-2 pb-2 editOrderCollapse storage" data-orderid="@order.ID" data-productid="@order.productID" data-amount="@order.amount" data-paidamount="@order.paidAmount">
-                                                    <div class="col-3 iptal">
-                                                        <button type="button" class="input-group-btn mycard text-white px-1 pr-2 btnSiparisiIptalEt">
-                                                            <i class="fas fa-trash-alt mx-2"></i>
-                                                            Siparişi İptal Et
-                                                        </button>
-                                                    </div>
-                                                    <div class="col-4 adet">
-                                                        <div class="input-group">
-                                                            <button type="button" class="input-group-btn mycard text-white btnAzalt">
-                                                                <i class="fas fa-minus"></i>
+                                                @if (order.status == 1)
+                                                {
+                                                    <div class="row justify-content-center align-items-center pt-2 pb-2 editOrderCollapse storage" data-orderid="@order.ID" data-productid="@order.productID" data-amount="@order.amount" data-paidamount="@order.paidAmount">
+                                                        <div class="col-3 iptal">
+                                                            <button type="button" class="input-group-btn mycard text-white px-1 pr-2 btnSiparisiIptalEt">
+                                                                <i class="fas fa-trash-alt mx-2"></i>
+                                                                Siparişi İptal Et
                                                             </button>
-                                                            <input type="text" class="form-control text-center txtAdet inpt" placeholder="0" value="@(order.amount - order.paidAmount)">
-                                                            <button type="button" class="input-group-btn mycard text-white btnArttir">
-                                                                <i class="fas fa-plus"></i>
+                                                        </div>
+                                                        <div class="col-4 adet">
+                                                            <div class="input-group">
+                                                                <button type="button" class="input-group-btn mycard text-white btnAzalt">
+                                                                    <i class="fas fa-minus"></i>
+                                                                </button>
+                                                                <input type="text" class="form-control text-center txtAdet inpt" placeholder="0" value="@(order.amount - order.paidAmount)">
+                                                                <button type="button" class="input-group-btn mycard text-white btnArttir">
+                                                                    <i class="fas fa-plus"></i>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-4 text-right onay">
+                                                            <button type="button" class="input-group-btn mycard text-white px-1 pr-2 btnVazgec">
+                                                                <i class="fas fa-times mx-2"></i>
+                                                                Vazgeç
+                                                            </button>
+                                                            <button type="button" class="input-group-btn mycard text-white px-1 pr-2 btnOnayla">
+                                                                <i class="fas fa-check mx-2"></i>
+                                                                Onayla
                                                             </button>
                                                         </div>
                                                     </div>
-                                                    <div class="col-4 text-right onay">
-                                                        <button type="button" class="input-group-btn mycard text-white px-1 pr-2 btnVazgec">
-                                                            <i class="fas fa-times mx-2"></i>
-                                                            Vazgeç
-                                                        </button>
-                                                        <button type="button" class="input-group-btn mycard text-white px-1 pr-2 btnOnayla">
-                                                            <i class="fas fa-check mx-2"></i>
-                                                            Onayla
-                                                        </button>
+                                                }
+                                                else
+                                                {
+                                                    <div class="row">
+                                                        <div class="col text-center">
+                                                            Sipariş hazırlanma aşamasını geçtiğinden düzenleme yapılamaz.
+                                                        </div>
                                                     </div>
-                                                </div>
+                                                }
                                             </div>
                                         </div>
                                     </div>
                                 }
                                 <div class="row py-2">
                                     <div class="col text-right">
-                                        Genel Toplam: @orders.Sum(x => x.product.price * (x.amount - x.paidAmount)).ToString("F") TL
+                                        Genel Toplam: @receiptList.Sum(x => x.product.price * (x.amount - x.paidAmount)).ToString("F") TL
                                     </div>
                                 </div>
                             </div>
@@ -114,6 +149,31 @@
         $('.btnEditOrder').on('click', function () {
             var row = $(this).closest('#menuItem');
             row.toggleClass('mycard');
+        });
+
+        $('.btnSetReady').on('click', function () {
+            var btn = $(this);
+            var orderID = btn.data('orderid');
+            var disabled = btn.attr('disabled');
+
+            if (disabled != "disabled") {
+                var url = '@Url.Action("SiparisHazir", "Order")';
+                var data = 'orderID:' + orderID ;
+
+                myajax(url, data, function (e) {
+                    if (e.confirm)
+                        window.location.reload();
+                    else
+                        console.log(e.errorMessage);
+                }, function (e) {
+                    console.log(e);
+                });
+            }
+        });
+
+        $('.txtAdet').on('focusout', function () {
+            if ($(this).val() < 1)
+                $(this).val("1");
         });
 
         $('.btnArttir').on('click', function () {

@@ -112,7 +112,7 @@ namespace WaiterApp.Controllers
             try
             {
                 BllOrder bllOrder = new BllOrder();
-                List<order> orders = bllOrder.GetOrders();
+                List<order> orders = bllOrder.GetOrdersForOrdersPage();
 
                 ViewBag.user = new mUser(new BllUser().GetUserByID(BllOrtak.Sessions.ID));
                 ViewBag.orders = orders;
@@ -136,17 +136,24 @@ namespace WaiterApp.Controllers
                 bool tableUpdateSuccess = false;
                 if (tableID > 0 && !name.IsNullOrEmpty() && !phoneNumber.IsNullOrEmpty() && !reservationDate.IsNullOrEmpty() && !reservationTime.IsNullOrEmpty() && numberOfPeople > 0)
                 {
-                    reservationSuccess = bllReservation.SetReservation(
-                    tableID: tableID,
-                    name: name,
-                    phoneNumber: phoneNumber,
-                    reservationDate: reservationDate,
-                    reservationTime: reservationTime,
-                    numberOfPeople: numberOfPeople
-                    );
-                    table table = bllTable.GetTableByID(tableID);
-                    table.availability = 3;
-                    tableUpdateSuccess = bllTable.Update(table);
+                    if (reservationTime.ToDateTime() < DateTime.Now.AddMinutes(60))
+                    {
+                        return Json(new { confirm = false, errorMessage = "Geçmiş tarihli rezervasyon yapılamaz. Lütfen gelecek bir zamanı seçin. (Rezervasyon en az 1 saat önceden yapılmalıdır.)" }, JsonRequestBehavior.AllowGet);
+                    }
+                    else
+                    {
+                        reservationSuccess = bllReservation.SetReservation(
+                        tableID: tableID,
+                        name: name,
+                        phoneNumber: phoneNumber,
+                        reservationDate: reservationDate,
+                        reservationTime: reservationTime,
+                        numberOfPeople: numberOfPeople
+                        );
+                        table table = bllTable.GetTableByID(tableID);
+                        table.availability = 3;
+                        tableUpdateSuccess = bllTable.Update(table);
+                    }
                 }
                 else
                 {

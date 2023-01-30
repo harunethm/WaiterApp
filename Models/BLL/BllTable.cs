@@ -15,9 +15,14 @@ namespace WaiterApp.Models.BLL
             return GetAll(x => x.status == true);
         }
 
+        public List<table> GetAllTables()
+        {
+            return GetAll();
+        }
+
         public table GetTableByID(int tableID)
         {
-            return GetSingle(x => x.status == true && x.ID == tableID);
+            return GetSingle(x => x.ID == tableID);
         }
 
         public bool IsTableHasOrder(int tableID) // false => sipariş yok, true => sipariş var
@@ -57,6 +62,7 @@ namespace WaiterApp.Models.BLL
                 table table = GetTableByID(tableID);
                 table.availability = 1;
                 table.balance = 0;
+                //new BllReceipt().CloseReceipt(table.receipts.Single(x => x.status).ID);
                 return Update(table);
             }
             return false;
@@ -72,6 +78,36 @@ namespace WaiterApp.Models.BLL
             table.status = mTable.status;
             UpdateOnly(table);
             return true;
+        }
+
+        public bool AddTable(string tableName, int numberOfChairs)
+        {
+            return Add(new table()
+            {
+                tableName = tableName,
+                availability = 1,
+                balance = 0,
+                numberOfChairs = numberOfChairs,
+                status = true,
+            });
+        }
+
+        public List<mTable> ToModel(List<table> tables)
+        {
+            List<mTable> mTables = new List<mTable>();
+            foreach (var table in tables)
+            {
+                mTables.Add(new mTable()
+                {
+                    ID = table.ID,
+                    availability = table.availability,
+                    balance = table.balance,
+                    numberOfChairs = table.numberOfChairs,
+                    status = table.status,
+                    tableName = table.tableName,
+                });
+            }
+            return mTables;
         }
     }
 }

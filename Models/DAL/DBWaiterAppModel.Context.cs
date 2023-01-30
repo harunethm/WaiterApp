@@ -31,10 +31,10 @@ namespace WaiterApp.Models.DAL
         public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
         public virtual DbSet<takeAway> takeAways { get; set; }
         public virtual DbSet<reservation> reservations { get; set; }
-        public virtual DbSet<role> roles { get; set; }
         public virtual DbSet<table> tables { get; set; }
         public virtual DbSet<payment> payments { get; set; }
-        public virtual DbSet<order> orders { get; set; }
+        public virtual DbSet<role> roles { get; set; }
         public virtual DbSet<user> users { get; set; }
+        public virtual DbSet<order> orders { get; set; }
     }
 }

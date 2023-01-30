@@ -14,9 +14,9 @@ namespace WaiterApp.Models.BLL
             return GetAll(x => x.status == true);
         }
 
-        public product GetProducts(int productID)
+        public product GetProduct(int productID)
         {
-            return GetAll(x => x.status == true && x.ID == productID).FirstOrDefault();
+            return GetSingle(x => x.ID == productID);
         }
 
         public List<product> GetProductsByCategory(int categoryID)
@@ -35,10 +35,48 @@ namespace WaiterApp.Models.BLL
             return ToModel(products);
         }
 
+
+        public List<product> GetAllProductsByCategory(int categoryID)
+        {
+            return GetAll(x => x.categoryID == categoryID);
+        }
+        public List<mProduct> GetAllmProductsByCategory(int categoryID)
+        {
+            List<product> products = GetAllProductsByCategory(categoryID);
+            return ToModel(products);
+        }
         public mProduct GetmProductByOrderID(int orderID)
         {
             return new BllOrder().GetmOrder(orderID).product;
         }
+
+
+        public bool AddProduct(mProduct mProduct)
+        {
+            product product = new product()
+            {
+                categoryID = mProduct.categoryID,
+                description = mProduct.description,
+                name = mProduct.name,
+                price = mProduct.price,
+                status = mProduct.status,
+            };
+
+            return Add(product);
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         public List<mProduct> ToModel(List<product> list)
         {

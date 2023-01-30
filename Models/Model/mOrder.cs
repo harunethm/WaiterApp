@@ -14,7 +14,8 @@ namespace WaiterApp.Models.Model
         public int amount { get; set; }
         public int paidAmount { get; set; }
         public string comment { get; set; }
-        public bool status { get; set; }
+        //1 = hazırlanıyor, 2 = hazır, 3 = ödendi, 4 = iptal
+        public int status { get; set; }
 
         public virtual mProduct product { get; set; }
         public virtual mReceipt receipt { get; set; }

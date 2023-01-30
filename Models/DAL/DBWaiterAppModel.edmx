@@ -23,7 +23,7 @@
           <Property Name="amount" Type="int" Nullable="false" />
           <Property Name="paidAmount" Type="int" Nullable="false" />
           <Property Name="comment" Type="text" />
-          <Property Name="status" Type="bit" Nullable="false" />
+          <Property Name="status" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="payment">
           <Key>
@@ -79,7 +79,7 @@
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="name" Type="text" Nullable="false" />
           <Property Name="authorityLevel" Type="int" Nullable="false" />
-          <Property Name="status" Type="int" Nullable="false" />
+          <Property Name="status" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="sysdiagrams">
           <Key>
@@ -324,8 +324,8 @@
           <Property Name="status" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="takeAways" Relationship="Self.FK_takeAway_receipt" FromRole="receipt" ToRole="takeAway" />
           <NavigationProperty Name="table" Relationship="DBWaiterAppModel.FK_receipt_table" FromRole="receipt" ToRole="table" />
-          <NavigationProperty Name="orders" Relationship="DBWaiterAppModel.FK_order_receipt" FromRole="receipt" ToRole="order" />
           <NavigationProperty Name="user" Relationship="DBWaiterAppModel.FK_receipt_user" FromRole="receipt" ToRole="user" />
+          <NavigationProperty Name="orders" Relationship="DBWaiterAppModel.FK_order_receipt" FromRole="receipt" ToRole="order" />
         </EntityType>
         <EntityType Name="sysdiagram">
           <Key>
@@ -389,7 +389,6 @@
             <End Role="takeAway" EntitySet="takeAways" />
           </AssociationSet>
           <EntitySet Name="reservations" EntityType="DBWaiterAppModel.reservation" />
-          <EntitySet Name="roles" EntityType="DBWaiterAppModel.role" />
           <EntitySet Name="tables" EntityType="DBWaiterAppModel.table" />
           <AssociationSet Name="FK_receipt_table" Association="DBWaiterAppModel.FK_receipt_table">
             <End Role="table" EntitySet="tables" />
@@ -400,6 +399,16 @@
             <End Role="reservation" EntitySet="reservations" />
           </AssociationSet>
           <EntitySet Name="payments" EntityType="DBWaiterAppModel.payment" />
+          <EntitySet Name="roles" EntityType="DBWaiterAppModel.role" />
+          <EntitySet Name="users" EntityType="DBWaiterAppModel.user" />
+          <AssociationSet Name="FK_receipt_user" Association="DBWaiterAppModel.FK_receipt_user">
+            <End Role="user" EntitySet="users" />
+            <End Role="receipt" EntitySet="receipts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_user_role" Association="DBWaiterAppModel.FK_user_role">
+            <End Role="role" EntitySet="roles" />
+            <End Role="user" EntitySet="users" />
+          </AssociationSet>
           <EntitySet Name="orders" EntityType="DBWaiterAppModel.order" />
           <AssociationSet Name="FK_order_product" Association="DBWaiterAppModel.FK_order_product">
             <End Role="product" EntitySet="products" />
@@ -413,16 +422,7 @@
             <End Role="order" EntitySet="orders" />
             <End Role="payment" EntitySet="payments" />
           </AssociationSet>
-          <EntitySet Name="users" EntityType="DBWaiterAppModel.user" />
-          <AssociationSet Name="FK_receipt_user" Association="DBWaiterAppModel.FK_receipt_user">
-            <End Role="user" EntitySet="users" />
-            <End Role="receipt" EntitySet="receipts" />
-          </AssociationSet>
-          <AssociationSet Name="FK_user_role" Association="DBWaiterAppModel.FK_user_role">
-            <End Role="role" EntitySet="roles" />
-            <End Role="user" EntitySet="users" />
-          </AssociationSet>
-        </EntityContainer>
+          </EntityContainer>
         <EntityType Name="reservation">
           <Key>
             <PropertyRef Name="ID" />
@@ -436,16 +436,6 @@
           <Property Name="numberOfPeople" Type="Int32" Nullable="false" />
           <Property Name="status" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="table" Relationship="DBWaiterAppModel.FK_reservation_table" FromRole="reservation" ToRole="table" />
-        </EntityType>
-        <EntityType Name="role">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="name" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="authorityLevel" Type="Int32" Nullable="false" />
-          <Property Name="status" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="users" Relationship="DBWaiterAppModel.FK_user_role" FromRole="role" ToRole="user" />
         </EntityType>
         <EntityType Name="table">
           <Key>
@@ -497,57 +487,16 @@
           <Property Name="total" Type="Decimal" Precision="19" Scale="4" />
           <NavigationProperty Name="order" Relationship="DBWaiterAppModel.FK_payment_order" FromRole="payment" ToRole="order" />
         </EntityType>
-        <EntityType Name="order">
+        <EntityType Name="role">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="receiptID" Type="Int32" Nullable="false" />
-          <Property Name="productID" Type="Int32" Nullable="false" />
-          <Property Name="amount" Type="Int32" Nullable="false" />
-          <Property Name="paidAmount" Type="Int32" Nullable="false" />
-          <Property Name="comment" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="authorityLevel" Type="Int32" Nullable="false" />
           <Property Name="status" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="product" Relationship="DBWaiterAppModel.FK_order_product" FromRole="order" ToRole="product" />
-          <NavigationProperty Name="receipt" Relationship="DBWaiterAppModel.FK_order_receipt" FromRole="order" ToRole="receipt" />
-          <NavigationProperty Name="payments" Relationship="DBWaiterAppModel.FK_payment_order" FromRole="order" ToRole="payment" />
+          <NavigationProperty Name="users" Relationship="DBWaiterAppModel.FK_user_role" FromRole="role" ToRole="user" />
         </EntityType>
-        <Association Name="FK_order_product">
-          <End Type="DBWaiterAppModel.product" Role="product" Multiplicity="1" />
-          <End Type="DBWaiterAppModel.order" Role="order" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="product">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="order">
-              <PropertyRef Name="productID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_order_receipt">
-          <End Type="DBWaiterAppModel.receipt" Role="receipt" Multiplicity="1" />
-          <End Type="DBWaiterAppModel.order" Role="order" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="receipt">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="order">
-              <PropertyRef Name="receiptID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_payment_order">
-          <End Type="DBWaiterAppModel.order" Role="order" Multiplicity="1" />
-          <End Type="DBWaiterAppModel.payment" Role="payment" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="order">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="payment">
-              <PropertyRef Name="orderID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="user">
           <Key>
             <PropertyRef Name="ID" />
@@ -589,7 +538,58 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-      </Schema>
+        <EntityType Name="order">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="receiptID" Type="Int32" Nullable="false" />
+          <Property Name="productID" Type="Int32" Nullable="false" />
+          <Property Name="amount" Type="Int32" Nullable="false" />
+          <Property Name="paidAmount" Type="Int32" Nullable="false" />
+          <Property Name="comment" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="status" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="product" Relationship="DBWaiterAppModel.FK_order_product" FromRole="order" ToRole="product" />
+          <NavigationProperty Name="receipt" Relationship="DBWaiterAppModel.FK_order_receipt" FromRole="order" ToRole="receipt" />
+          <NavigationProperty Name="payments" Relationship="DBWaiterAppModel.FK_payment_order" FromRole="order" ToRole="payment" />
+        </EntityType>
+        <Association Name="FK_order_product">
+          <End Type="DBWaiterAppModel.product" Role="product" Multiplicity="1" />
+          <End Type="DBWaiterAppModel.order" Role="order" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="product">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="order">
+              <PropertyRef Name="productID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_order_receipt">
+          <End Type="DBWaiterAppModel.receipt" Role="receipt" Multiplicity="1" />
+          <End Type="DBWaiterAppModel.order" Role="order" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="receipt">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="order">
+              <PropertyRef Name="receiptID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_payment_order">
+          <End Type="DBWaiterAppModel.order" Role="order" Multiplicity="1" />
+          <End Type="DBWaiterAppModel.payment" Role="payment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="order">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="payment">
+              <PropertyRef Name="orderID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
@@ -666,16 +666,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="roles">
-            <EntityTypeMapping TypeName="DBWaiterAppModel.role">
-              <MappingFragment StoreEntitySet="role">
-                <ScalarProperty Name="status" ColumnName="status" />
-                <ScalarProperty Name="authorityLevel" ColumnName="authorityLevel" />
-                <ScalarProperty Name="name" ColumnName="name" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="tables">
             <EntityTypeMapping TypeName="DBWaiterAppModel.table">
               <MappingFragment StoreEntitySet="table">
@@ -701,15 +691,12 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="orders">
-            <EntityTypeMapping TypeName="DBWaiterAppModel.order">
-              <MappingFragment StoreEntitySet="order">
+          <EntitySetMapping Name="roles">
+            <EntityTypeMapping TypeName="DBWaiterAppModel.role">
+              <MappingFragment StoreEntitySet="role">
                 <ScalarProperty Name="status" ColumnName="status" />
-                <ScalarProperty Name="comment" ColumnName="comment" />
-                <ScalarProperty Name="paidAmount" ColumnName="paidAmount" />
-                <ScalarProperty Name="amount" ColumnName="amount" />
-                <ScalarProperty Name="productID" ColumnName="productID" />
-                <ScalarProperty Name="receiptID" ColumnName="receiptID" />
+                <ScalarProperty Name="authorityLevel" ColumnName="authorityLevel" />
+                <ScalarProperty Name="name" ColumnName="name" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -726,6 +713,19 @@
                 <ScalarProperty Name="surname" ColumnName="surname" />
                 <ScalarProperty Name="name" ColumnName="name" />
                 <ScalarProperty Name="profilePicture" ColumnName="profilePicture" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="orders">
+            <EntityTypeMapping TypeName="DBWaiterAppModel.order">
+              <MappingFragment StoreEntitySet="order">
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="comment" ColumnName="comment" />
+                <ScalarProperty Name="paidAmount" ColumnName="paidAmount" />
+                <ScalarProperty Name="amount" ColumnName="amount" />
+                <ScalarProperty Name="productID" ColumnName="productID" />
+                <ScalarProperty Name="receiptID" ColumnName="receiptID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

@@ -18,7 +18,7 @@
     <Property Name="amount" Type="int" Nullable="false" />
     <Property Name="paidAmount" Type="int" Nullable="false" />
     <Property Name="comment" Type="text" />
-    <Property Name="status" Type="bit" Nullable="false" />
+    <Property Name="status" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="payment">
     <Key>
@@ -74,7 +74,7 @@
     <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="name" Type="text" Nullable="false" />
     <Property Name="authorityLevel" Type="int" Nullable="false" />
-    <Property Name="status" Type="int" Nullable="false" />
+    <Property Name="status" Type="bit" Nullable="false" />
   </EntityType>
   <EntityType Name="sysdiagrams">
     <Key>

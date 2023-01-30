@@ -26,7 +26,7 @@ namespace WaiterApp.Models.DAL
         public int amount { get; set; }
         public int paidAmount { get; set; }
         public string comment { get; set; }
-        public bool status { get; set; }
+        public int status { get; set; }
     
         public virtual product product { get; set; }
         public virtual receipt receipt { get; set; }

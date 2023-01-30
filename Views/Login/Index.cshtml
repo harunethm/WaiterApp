@@ -1,6 +1,7 @@
 ﻿
 @{
     Layout = null;
+    string error = ViewBag.error ?? "";
 }
 
 <!DOCTYPE html>
@@ -26,15 +27,20 @@
                             <h1>Giriş</h1>
                         </div>
                     </div>
-                    <form action="@Url.Action("Index","Login")" method="post" name="login">
+                    <form action="@Url.Action("Index","Login", new { returnUrl = Request.QueryString["ReturnUrl"]})" method="post" name="login">
                         <div class="form-group mx-2">
                             <label for="userName">E-Mail Adresi</label>
                             <input type="text" name="userName" class="form-control form-control-plaintext inpt" id="userName" placeholder="E-Mail adresinizi giriniz.">
                         </div>
                         <div class="form-group mx-2">
                             <label for="password">Şifre</label>
-                            <input type="text" name="password" id="password" class="form-control form-control-plaintext inpt" placeholder="Şifre giriniz.">
+                            <input type="password" name="password" id="password" class="form-control form-control-plaintext inpt" placeholder="Şifre giriniz.">
                         </div>
+                        <div class="form-group mx-2">
+                            <input type="checkbox" name="rememberMe" id="rememberMe" class="form-check-inline">
+                            <label for="rememberMe">Beni Hatırla</label>
+                        </div>
+                        <div class="error">@error</div>
                         <div class="col-md-12 text-center my-3 mt-5 mx-2">
                             <button type="submit" class=" btn btn-block mybtn btn-primary tx-tfm ">GİRİŞ YAP</button>
                         </div>
@@ -48,7 +54,14 @@
 </body>
 </html>
 <style type="text/css">
+
+    @@font-face {
+        font-family: 'Mohave';
+        src: url('../../Belgeler/Fonts/Mohave/Mohave-VariableFont_wght.ttf');
+    }
+
     body {
+        font-family: Mohave, cursive;
         padding-top: 4.2rem;
         padding-bottom: 4.2rem;
         background-color: #4b4a49;
@@ -62,10 +75,6 @@
         margin: 0px;
         height: 100%;
         width: 100%;
-    }
-
-    h1, h2, h3 {
-        font-family: 'Kaushan Script', cursive;
     }
 
     #logo {
@@ -126,35 +135,8 @@
 <script type="text/javascript">
 
     $(document).ready(function () {
+        $('#userName').val("harunethm@gmail.com");
+        $('#password').val("harunethemcalis");
     });
-
-    //$(function () {
-
-
-    //    $("form[name='login']").validate({
-    //        rules: {
-
-    //            email: {
-    //                required: true,
-    //            },
-    //            password: {
-    //                required: true,
-
-    //            }
-    //        },
-    //        messages: {
-    //            email: "Lütfen geçerli bir e-mail adresi veya telefon numarası adresi giriniz.",
-
-    //            password: {
-    //                required: "Lütfen şifrenizi giriniz.",
-
-    //            }
-
-    //        },
-    //        submitHandler: function (form) {
-    //            form.submit();
-    //        }
-    //    });
-    //});
 
 </script>

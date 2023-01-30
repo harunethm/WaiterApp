@@ -11,7 +11,7 @@ namespace WaiterApp.Models.Model
         public int ID { get; set; }
         public string name { get; set; }
         public int authorityLevel { get; set; }
-        public int status { get; set; }
+        public bool status { get; set; }
 
         public mRole(role role)
         {

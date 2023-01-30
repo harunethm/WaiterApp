@@ -6,7 +6,6 @@
     Layout = "~/Views/Shared/_HomeLayout.cshtml";
     List<table> tables = ViewBag.tables;
     List<reservation> reservations = ViewBag.reservations;
-    reservation reservation = null;
 
 
     List<TablesPage> tablesPages = ViewBag.TablesPages;
@@ -24,9 +23,9 @@
                             <div class="card-body">
                                 <div class="row align-items-center">
                                     <div class="col-2 align-items-center">
-                                        <button type="button" class="btn bg-transparent" data-toggle="collapse" data-target="#collapse@(table.table.ID)">
+                                        <button type="button" class="btn bg-transparent" @(table.table.availability != 2 ? "disabled" : "") data-toggle="collapse" data-target="#collapse@(table.table.ID)">
                                             <img src="~/Belgeler/Images/dinner-table.png" class="icon50" />
-                                            <span class="text-white-50">
+                                            <span class="@(table.table.availability == 2 ? "text-white" : "") ">
                                                 Siparişler
                                             </span>
                                         </button>
@@ -103,7 +102,7 @@
                                             <ul class="list-group ">
                                                 <li class="list-group-item">
                                                     <div class="row">
-                                                        <div class="col-6">
+                                                        <div class="col-6 text-left">
                                                             Adı
                                                         </div>
                                                         <div class="col-3 text-center">
@@ -120,7 +119,7 @@
 
                                                     <li class="list-group-item">
                                                         <div class="row">
-                                                            <div class="col-6">
+                                                            <div class="col-6 text-left">
                                                                 @order.product.name
                                                             </div>
                                                             <div class="col-3 comment text-center ">

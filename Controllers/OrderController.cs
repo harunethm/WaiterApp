@@ -19,10 +19,26 @@ namespace WaiterApp.Controllers
                 List<order> orders = bllOrder.GetOrdersByOrderIDandProductID(orderID, productID);
                 foreach (var order in orders)
                 {
-                    order.status = false;
+                    order.status = 4;
                     bllOrder.Update(order);
                 }
                 return Json(new { confirm = true }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                return Json(new { confirm = false, errorMessage = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public JsonResult SiparisHazir(int orderID)
+        {
+            try
+            {
+                BllOrder bllOrder = new BllOrder();
+                order order = bllOrder.GetOrder(orderID);
+                order.status = 2;
+
+                return Json(new { confirm = bllOrder.Update(order) }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
