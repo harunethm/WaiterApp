@@ -1,0 +1,63 @@
+﻿@using WaiterApp.Models.DAL
+
+@{
+    ViewBag.Title = "Orders";
+    ViewBag.active = "orders";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    List<order> orders = ViewBag.orders;
+    var list = orders.GroupBy(x => x.receipt).ToList();
+}
+
+<h2>Siparişler</h2>
+
+<div class="row">
+    <div class="col">
+        @foreach (var item in list)
+        {
+            <div class="card">
+                <div class="card-header">
+                    <p class="card-category">@item.FirstOrDefault().receipt.user.name @item.FirstOrDefault().receipt.user.surname</p>
+                    <h4 class="card-title d-inline">@item.FirstOrDefault().receipt.table.tableName</h4>
+                    @if (item.FirstOrDefault().status)
+                    {
+                        <p class="d-inline ml-3">@(item.FirstOrDefault().receipt.openingTime?.ToString("t")) -  @(item.FirstOrDefault().receipt.closingTime?.ToString("t") ?? "Devam Eden")</p>
+                    }
+                    else
+                    {
+                        <p class="badge badge-danger">Geçmiş Sipariş</p>
+                    }
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <p class="card-category">Ürün</p>
+                        <table class="table">
+                            <thead class="text-primary">
+                                <tr>
+                                    <th class="text-left">Ürün Adı</th>
+                                    <th class="text-center">Sipariş Açıklaması</th>
+                                    <th class="text-center">Sipariş Adedi</th>
+                                    <th class="text-center">Ödenen Adet</th>
+                                    <th class="text-center">Birim Fiyatı</th>
+                                    <th class="text-right">Toplam Fiyat</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var order in item)
+                                {
+                                    <tr>
+                                        <td class="text-left">@order.product.name</td>
+                                        <td class="text-center">@order.comment</td>
+                                        <td class="text-center">@order.amount</td>
+                                        <td class="text-center">@order.paidAmount</td>
+                                        <td class="text-center">@order.product.price.ToString("F") TL</td>
+                                        <td class="text-right">@((order.amount * order.product.price).ToString("F")) TL</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

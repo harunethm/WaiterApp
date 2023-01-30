@@ -1,0 +1,227 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="apple-touch-icon" sizes="76x76" href="~/Belgeler/Images/restaurant.png">
+    <link rel="icon" type="image/png" href="~/Belgeler/Images/restaurant.png">
+
+    <title>@ViewBag.Title</title>
+
+    <link href="https://fonts.googleapis.com/css?family=Poppins:200,300,400,600,700,800" rel="stylesheet" />
+    <link href="https://use.fontawesome.com/releases/v5.10.0/css/all.css" rel="stylesheet">
+
+    <link href="~/Belgeler/Templates/BlackDashboard/css/nucleo-icons.css" rel="stylesheet" />
+    <link href="~/Belgeler/Templates/BlackDashboard/css/black-dashboard.css?v=1.0.0" rel="stylesheet" />
+
+    <style type="text/css">
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background-color: rgb(25, 255, 255, 0);
+        }
+
+        ::-webkit-scrollbar-corner {
+            background: rgba(0,0,0,0.0);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgb(47 47 47);
+            border-radius: 5px;
+        }
+
+            ::-webkit-scrollbar-thumb:hover {
+                background: #141414;
+            }
+
+
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+    </style>
+
+</head>
+<body>
+    <div class="wrapper">
+        <div class="sidebar">
+            <div class="sidebar-wrapper">
+                <div class="logo">
+                    <a class="simple-text logo-mini">
+                        <img src="~/Belgeler/Images/restaurant.png" />
+                    </a>
+                    <span class="simple-text logo-normal">
+                        WaiterApp
+                    </span>
+                </div>
+                <ul class="nav">
+                    <li class="" id="categories">
+                        <a href="@Url.Action("Categories", "Admin")">
+                            <i class="tim-icons icon-bullet-list-67"></i>
+                            <p>Kategoriler</p>
+                        </a>
+                    </li>
+                    <li class="" id="products">
+                        <a href="@Url.Action("Products", "Admin")">
+                            <i class="tim-icons icon-basket-simple"></i>
+                            <p>Ürünler</p>
+                        </a>
+                    </li>
+                    <li class="" id="tables">
+                        <a href="@Url.Action("Tables", "Admin")">
+                            <i class="tim-icons icon-components"></i>
+                            <p>Masalar</p>
+                        </a>
+                    </li>
+                    <li class="" id="users">
+                        <a href="@Url.Action("Users", "Admin")">
+                            <i class="tim-icons icon-badge"></i>
+                            <p>Kullanıcılar</p>
+                        </a>
+                    </li>
+                    <li class="divider"></li>
+                    <li class="" id="cashRegisters">
+                        <a href="@Url.Action("CashRegister", "Admin")">
+                            <i class="tim-icons icon-money-coins"></i>
+                            <p>Kasa</p>
+                        </a>
+                    </li>
+                    <li class="" id="orders">
+                        <a href="@Url.Action("Orders", "Admin")">
+                            <i class="tim-icons icon-notes"></i>
+                            <p>Siparişler</p>
+                        </a>
+                    </li>
+                    <li class="" id="reservations">
+                        <a href="@Url.Action("Reservations", "Admin")">
+                            <i class="tim-icons icon-calendar-60"></i>
+                            <p>Rezervasyonlar</p>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="main-panel">
+            <nav class="navbar navbar-expand-lg navbar-absolute navbar-transparent">
+                <div class="container-fluid">
+                    <div class="navbar-wrapper">
+                        <div class="navbar-toggle d-inline">
+                            <button type="button" class="navbar-toggler">
+                                <span class="navbar-toggler-bar bar1"></span>
+                                <span class="navbar-toggler-bar bar2"></span>
+                                <span class="navbar-toggler-bar bar3"></span>
+                            </button>
+                        </div>
+                        <span class="navbar-brand" href="javascript:void(0)">
+                            WAITERAPP
+                        </span>
+                    </div>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-bar navbar-kebab"></span>
+                        <span class="navbar-toggler-bar navbar-kebab"></span>
+                        <span class="navbar-toggler-bar navbar-kebab"></span>
+                    </button>
+
+                    <div class="collapse navbar-collapse" id="navigation">
+                        <ul class="navbar-nav ml-auto">
+                            <li class="dropdown nav-item">
+                                <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
+                                    <div class="photo">
+                                        <img src="~/Belgeler/Images/user.png" id="profilePic" alt="Profil Resmi">
+                                    </div>
+                                    <b class="caret d-none d-lg-block"></b>
+                                    <p class="d-lg-none" id="userName">
+                                        Admin
+                                    </p>
+                                </a>
+                                <ul class="dropdown-menu dropdown-navbar">
+                                    <li class="nav-link"><a href="@Url.Action("Menu", "Home")" class="nav-item dropdown-item">Menüye dön</a></li>
+                                    <li class="dropdown-divider"></li>
+                                    <li class="nav-link"><a href="@Url.Action("Index", "Login")" class="nav-item dropdown-item">Çıkış yap</a></li>
+                                </ul>
+                            </li>
+                            <li class="separator d-lg-none"></li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+            <div class="content">
+                @RenderBody()
+            </div>
+            <footer class="footer">
+                <div class="container-fluid">
+                    <ul class="nav">
+                        <li class="nav-item">
+                            <a href="https://github.com/harunethm" class="nav-link" target="_blank">
+                                GitHub
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="https://www.linkedin.com/in/harun-ethem-%C3%A7ali%C5%9F-65a858199/" class="nav-link" target="_blank">
+                                LinkedIn
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="copyright">
+                        &copy;
+                        @DateTime.Now.Year made by
+                        <a href="https://github.com/harunethm" target="_blank">Harun Ethem ÇALIŞ</a>.
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <style type="text/css">
+        .divider {
+            height: 2px;
+            margin-left: 15px;
+            margin-right: 15px;
+            background-color: rgb(255, 255, 255, .5);
+        }
+    </style>
+
+    @*<script src="~/Belgeler/Templates/BlackDashboard/js/core/jquery.min.js"></script>*@
+    <script src="~/Belgeler/JS/JQuery/JQuery.js"></script>
+
+    @*<script src="~/Belgeler/Templates/BlackDashboard/js/core/popper.min.js"></script>
+        <script src="~/Belgeler/Templates/BlackDashboard/js/core/bootstrap.min.js"></script>*@
+    <script src="~/Belgeler/Bootstrap/bootstrap-4.6.1-dist/js/bootstrap.bundle.js"></script>
+    <script src="~/Belgeler/Templates/BlackDashboard/js/plugins/perfect-scrollbar.jquery.min.js"></script>
+    <script src="~/Belgeler/Templates/BlackDashboard/js/black-dashboard.js"></script>
+
+    <script src="~/Belgeler/JS/MyJS.js"></script>
+
+    @RenderSection("styles", required: false)
+
+    @RenderSection("scripts", required: false)
+
+
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $('li.active').removeClass('active');
+            $('li#@ViewBag.Active').addClass('active');
+
+            getusername();
+        });
+
+
+    function getusername() {
+    var url = '@Url.Action("GetUserName", "Admin")';
+    var data = '';
+
+    myajax(url, data, function (e) { if (e.confirm) { $('#userName').html(e.name); $('#profilePic').attr('src', e.profilePic) }}, function () { });
+    }
+    </script>
+</body>
+</html>

@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using WaiterApp.Models.BLL;
 using WaiterApp.Models.DAL;
+using WaiterApp.Models.Model;
 
-namespace WaiterApp.Models.Model
+namespace WaiterApp.Models.BLL
 {
     public class BllPayment : BllBaseAbstract<payment>
     {

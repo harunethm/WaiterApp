@@ -79,7 +79,7 @@
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="name" Type="text" Nullable="false" />
           <Property Name="authorityLevel" Type="int" Nullable="false" />
-          <Property Name="status" Type="int" Nullable="false" />
+          <Property Name="status" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="sysdiagrams">
           <Key>
@@ -389,7 +389,6 @@
             <End Role="takeAway" EntitySet="takeAways" />
           </AssociationSet>
           <EntitySet Name="reservations" EntityType="DBWaiterAppModel.reservation" />
-          <EntitySet Name="roles" EntityType="DBWaiterAppModel.role" />
           <EntitySet Name="tables" EntityType="DBWaiterAppModel.table" />
           <AssociationSet Name="FK_receipt_table" Association="DBWaiterAppModel.FK_receipt_table">
             <End Role="table" EntitySet="tables" />
@@ -413,6 +412,7 @@
             <End Role="order" EntitySet="orders" />
             <End Role="payment" EntitySet="payments" />
           </AssociationSet>
+          <EntitySet Name="roles" EntityType="DBWaiterAppModel.role" />
           <EntitySet Name="users" EntityType="DBWaiterAppModel.user" />
           <AssociationSet Name="FK_receipt_user" Association="DBWaiterAppModel.FK_receipt_user">
             <End Role="user" EntitySet="users" />
@@ -422,7 +422,7 @@
             <End Role="role" EntitySet="roles" />
             <End Role="user" EntitySet="users" />
           </AssociationSet>
-        </EntityContainer>
+          </EntityContainer>
         <EntityType Name="reservation">
           <Key>
             <PropertyRef Name="ID" />
@@ -436,16 +436,6 @@
           <Property Name="numberOfPeople" Type="Int32" Nullable="false" />
           <Property Name="status" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="table" Relationship="DBWaiterAppModel.FK_reservation_table" FromRole="reservation" ToRole="table" />
-        </EntityType>
-        <EntityType Name="role">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="name" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="authorityLevel" Type="Int32" Nullable="false" />
-          <Property Name="status" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="users" Relationship="DBWaiterAppModel.FK_user_role" FromRole="role" ToRole="user" />
         </EntityType>
         <EntityType Name="table">
           <Key>
@@ -548,6 +538,16 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="role">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="authorityLevel" Type="Int32" Nullable="false" />
+          <Property Name="status" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="users" Relationship="DBWaiterAppModel.FK_user_role" FromRole="role" ToRole="user" />
+        </EntityType>
         <EntityType Name="user">
           <Key>
             <PropertyRef Name="ID" />
@@ -589,7 +589,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-      </Schema>
+        </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
@@ -666,16 +666,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="roles">
-            <EntityTypeMapping TypeName="DBWaiterAppModel.role">
-              <MappingFragment StoreEntitySet="role">
-                <ScalarProperty Name="status" ColumnName="status" />
-                <ScalarProperty Name="authorityLevel" ColumnName="authorityLevel" />
-                <ScalarProperty Name="name" ColumnName="name" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="tables">
             <EntityTypeMapping TypeName="DBWaiterAppModel.table">
               <MappingFragment StoreEntitySet="table">
@@ -710,6 +700,16 @@
                 <ScalarProperty Name="amount" ColumnName="amount" />
                 <ScalarProperty Name="productID" ColumnName="productID" />
                 <ScalarProperty Name="receiptID" ColumnName="receiptID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="roles">
+            <EntityTypeMapping TypeName="DBWaiterAppModel.role">
+              <MappingFragment StoreEntitySet="role">
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="authorityLevel" ColumnName="authorityLevel" />
+                <ScalarProperty Name="name" ColumnName="name" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

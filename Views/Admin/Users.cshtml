@@ -1,0 +1,331 @@
+﻿@using WaiterApp.Models.Model
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
+    ViewBag.Title = "Kullanıcılar";
+    ViewBag.active = "users";
+
+    List<mUser> mUsers = ViewBag.mUsers;
+    string jsonUsers = Newtonsoft.Json.JsonConvert.SerializeObject(mUsers);
+
+    List<mRole> mRoles = ViewBag.mRoles;
+}
+
+<h2>Kullanıcılar</h2>
+<div class="row">
+    <div class="col-6 col-md-8">
+        <div class="myerror">
+
+        </div>
+        <div id="tables">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title d-inline">Kullanıcılar</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead class="text-primary">
+                                <tr>
+                                    <th class="text-left" width="25%">Adı Soyadı</th>
+                                    <th class="text-center" width="20%">E-Mail</th>
+                                    <th class="text-center" width="20%">Telefon Numarası</th>
+                                    <th class="text-center" width="15%">Kayıt Olma Tarihi</th>
+                                    <th class="text-center" width="10%">Rolü</th>
+                                    <th class="text-center" width="5%">Durumu</th>
+                                    <th class="text-right" width="5%">#</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var user in mUsers)
+                                {
+                                    <tr>
+                                        <td class="text-left">@user.name @user.surname</td>
+                                        <td class="text-center">@user.eMail</td>
+                                        <td class="text-center">@user.phoneNumber</td>
+                                        <td class="text-center">@user.registerDate</td>
+                                        <td class="text-center">@user.role.name</td>
+                                        <td class="text-center">
+                                            <div class="badge-pill badgeStatus @(user.status ? "badge-success" : "badge-danger")" data-uid="@user.ID" data-status="@user.status">
+                                                @(user.status ? "Aktif" : "Pasif")
+                                            </div>
+                                        </td>
+                                        <td class="text-right">
+                                            <i class="tim-icons icon-pencil edit" data-uid="@user.ID"></i>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-6 col-md-4">
+        <div class="sticky-top" style="top:70px">
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label>Ad</label>
+                        <input type="text" class="form-control" placeholder="Kullanıcı adı" id="inputName">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label>Soyad</label>
+                        <input type="text" class="form-control" placeholder="Kullanıcı soyadı" id="inputSurname">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label>E-Mail</label>
+                        <input type="text" class="form-control" placeholder="E-Mail adresi" id="inputEMail">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label>Telefon</label>
+                        <input type="text" class="form-control" placeholder="Telefon numarası" id="inputPhoneNumber">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label>Şifre</label>
+                        <div class="row align-items-center">
+                            <div class="col-10">
+                                <input type="password" class="form-control" placeholder="Şifre" id="inputPassword">
+                            </div>
+                            <div class="col-2">
+                                <div class="badge badge-dark" id="passwordShow"><i class="tim-icons icon-light-3"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label>Şifre Tekrar</label>
+                        <div class="row align-items-center">
+                            <div class="col-10">
+                                <input type="password" class="form-control" placeholder="Şifre Tekrar" id="inputPasswordRepeat">
+                            </div>
+                            <div class="col-2">
+                                <div class="badge badge-dark" id="passwordRepeatShow"><i class="tim-icons icon-light-3"></i></div>
+                            </div>
+                        </div>
+                        <label class="info">Şifreyi güncellemek istiyorsanız şifre tekrarını yazmayı unutmayınız.</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label>Rol</label>
+                        <select class="form-control" id="selectRole">
+                            <option value="0">Kullanıcı rolü seçiniz</option>
+                            @foreach (var role in mRoles)
+                            {
+                                <option value="@role.ID">@role.name</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row justify-content-around">
+                <button type="button" class="btn btn-danger" id="btnCancel">
+                    <i class="tim-icons icon-simple-remove"></i>
+                </button>
+                <button type="button" class="btn btn-primary add" id="btnConfirm" data-uid="0" data-status="true">
+                    <i class="tim-icons icon-simple-add"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section styles{
+    <style type="text/css">
+        select option {
+            background: #1f1e2f;
+            color: #fff;
+        }
+    </style>
+}
+
+@section scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $('#passwordShow').on('click', function () {
+                var password = $('#inputPassword');
+                if (password.attr('type') == 'password')
+                    password.attr('type', 'text');
+                else if (password.attr('type') == 'text')
+                    password.attr('type', 'password');
+                $(this).toggleClass('badge-dark').toggleClass('badge-info');
+            });
+
+            $('#passwordRepeatShow').on('click', function () {
+                var password = $('#inputPasswordRepeat');
+                if (password.attr('type') == 'password')
+                    password.attr('type', 'text');
+                else if (password.attr('type') == 'text')
+                    password.attr('type', 'password');
+                $(this).toggleClass('badge-dark').toggleClass('badge-info');
+            });
+
+
+
+            $('.edit').on('click', function () {
+                // ürünü sağ menüye doldur
+                // butonu artıdan tik e çevir
+                var uid = $(this).data('uid');
+                var user = findUser(uid);
+
+                $('#selectRole option[value=' + user['roleID'] + ']').prop('selected', 'selected');
+                $('#inputName').val(user['name']);
+                $('#inputSurname').val(user['surname']);
+                $('#inputEMail').val(user['eMail']);
+                $('#inputPhoneNumber').val(user['phoneNumber']);
+                $('#inputPassword').val(user['password']);
+
+                $('#btnConfirm').data('uid', uid);
+                $('#btnConfirm').data('status', user['status']);
+
+                btnAddToEdit();
+            });
+
+            $('.badgeStatus').on('dblclick', function () {
+                var badge = $(this);
+                var uid = badge.data('uid');
+                var status = badge.data('status') == "False" ? true : false;
+
+                changeStatus(uid, status);
+
+                // uid ile kullanıcının durumunu tersine çevir
+            });
+
+            $('#btnCancel').on('click', function () {
+                // sağ menüdeki alanları sıfırla
+                // eğer butonda tik varsa artıya çevir
+
+                btnEditToAdd();
+
+                $('#selectRole option[value=0]').prop('selected', 'selected');
+                $('#inputName').val('');
+                $('#inputSurname').val('');
+                $('#inputEMail').val('');
+                $('#inputPhoneNumber').val('');
+                $('#inputPassword').val('');
+                $('#inputPasswordRepeat').val('');
+
+                $('#btnConfirm').data('uid', 0);
+                $('#btnConfirm').data('status', true);
+
+            });
+
+            $('#btnConfirm').on('click', function () {
+                // eğer var olan ürün düzenlendiyse update yap
+                // eğer yeni ürün eklendiyse ekleme yap
+                var btn = $(this);
+                var uid = btn.data('uid');
+
+                var roleID = $('#selectRole').val();
+                var name = $('#inputName').val();
+                var surname = $('#inputSurname').val();
+                var eMail = $('#inputEMail').val();
+                var phoneNumber = $('#inputPhoneNumber').val();
+                var password = $('#inputPassword').val();
+                var passwordRepeat = $('#inputPasswordRepeat').val();
+                var status = btn.data('status');
+
+                if(password != '' && passwordRepeat != '' && password == passwordRepeat)
+                    addupdate(uid, name, surname, eMail, password, phoneNumber, password, roleID, status);
+                else
+                    addupdate(uid, name, surname, eMail, password, phoneNumber, '', roleID, status);
+
+            });
+
+
+        });
+
+        function addupdate(uid, name, surname, email, password, phonenumber, password, roleID, status) {
+
+            var data = 'ID:' + uid + ',name:"' + name + '",surname:"' + surname + '",eMail:"' + email + '",password:"' + password + '",phoneNumber:"' + phonenumber + '",roleID:' + roleID +',status:"' + status + '"';
+            var url = '@Url.Action("AddUpdateUser", "Admin")';
+
+            myajax(url, data, function (e) {
+                if (e.confirm) {
+                    window.location.reload();
+                }
+                else {
+                    setError(e.errorMessage)
+                }
+            }, function (e) {
+                setError(e);
+            });
+        }
+
+        function changeStatus(uid, status) {
+
+            var data = 'ID:' + uid + ',status:"' + status + '"';
+            var url = '@Url.Action("ChangeUserStatus", "Admin")';
+
+            myajax(url, data, function (e) {
+                if (e.confirm) {
+                    window.location.reload();
+                }
+                else {
+                    setError(e.errorMessage)
+                }
+            }, function (e) {
+                setError(e);
+            });
+        }
+
+
+        function btnAddToEdit() {
+            $('#btnConfirm').removeClass('add').addClass('edit');
+            $('#btnConfirm i.tim-icons').removeClass('icon-simple-add').addClass('icon-check-2');
+        }
+
+        function btnEditToAdd() {
+            $('#btnConfirm').removeClass('edit').addClass('add');
+            $('#btnConfirm i.tim-icons').removeClass('icon-check-2').addClass('icon-simple-add');
+        }
+
+        function setError(errorMessage) {
+            var error = '<div class="alert alert-danger">'+
+               '<button type="button" aria-hidden="true" class="close" data-dismiss="alert" >'+
+                   '<i class="tim-icons icon-simple-remove"></i>'+
+               '</button >'+
+               '<span><b> Hata - </b>' + errorMessage + '</span>'+
+                '</div >'
+            $('.myerror').html(error);
+        }
+
+        function findUser(uid) {
+            var jsonUsers = @Html.Raw(jsonUsers);
+            //console.log(jsonUsers);
+
+            for (var i = 0; i < jsonUsers.length; i++) {
+                if (jsonUsers[i]['ID'] == uid) {
+                    console.log(jsonUsers[i]);
+                    return jsonUsers[i];
+                }
+            }
+        }
+    </script>
+}
+

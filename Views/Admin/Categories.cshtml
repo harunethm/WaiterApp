@@ -1,0 +1,202 @@
+﻿@using WaiterApp.Models.Model
+
+@{
+    ViewBag.Title = "Categories";
+    ViewBag.Active = "categories";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
+    List<mMenu> mMenu = ViewBag.mMenu;
+    string jsonMenu = Newtonsoft.Json.JsonConvert.SerializeObject(mMenu);
+}
+
+<h2>Kategoriler</h2>
+
+<div class="row">
+    <div class="col-6 col-md-8">
+        <div class="myerror">
+
+        </div>
+        <div id="tables">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title d-inline">Kategoriler</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead class="text-primary">
+                                <tr>
+                                    <th class="text-left" width="50%">Adı</th>
+                                    <th class="text-center" width="15%">Toplam Ürün Sayısı</th>
+                                    <th class="text-center" width="15%">Aktif Ürün Sayısı</th>
+                                    <th class="text-center" width="15%">Durum</th>
+                                    <th class="text-right" width="5%">#</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var menuItem in mMenu)
+                                {
+                                    <tr>
+                                        <td class="text-left">@menuItem.category.name</td>
+                                        <td class="text-center">@menuItem.products.Count()</td>
+                                        <td class="text-center">@menuItem.products.Count(x => x.status)</td>
+                                        <td class="text-center">
+                                            <div class="badge-pill badgeStatus @(menuItem.category.status ? "badge-success" : "badge-danger")" data-cid="@menuItem.category.ID" data-status="@menuItem.category.status">
+                                                @(menuItem.category.status ? "Aktif" : "Pasif")
+                                            </div>
+                                        </td>
+                                        <td class="text-right">
+                                            <i class="tim-icons icon-pencil edit" data-cid="@menuItem.category.ID"></i>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-6 col-md-4">
+        <div class="sticky-top" style="top:70px">
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label>Ad</label>
+                        <input type="text" class="form-control" style="" placeholder="Kategori adı" id="inputName">
+                    </div>
+                </div>
+            </div>
+            <div class="row justify-content-around">
+                <button type="button" class="btn btn-danger" id="btnCancel">
+                    <i class="tim-icons icon-simple-remove"></i>
+                </button>
+                <button type="button" class="btn btn-primary add" id="btnConfirm" data-cid="0" data-status="true">
+                    <i class="tim-icons icon-simple-add"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $('.edit').on('click', function () {
+                // ürünü sağ menüye doldur
+                // butonu artıdan tik e çevir
+                var cid = $(this).data('cid');
+                var category = findCategory(cid);
+
+                $('#inputName').val(category['name']);
+                $('#btnConfirm').data('cid', cid);
+                $('#btnConfirm').data('status', category['status']);
+
+                btnAddToEdit();
+            });
+
+            $('.badgeStatus').on('dblclick', function () {
+                var badge = $(this);
+                var cid = badge.data('cid');
+                var status = badge.data('status') == "False" ? true : false;
+
+                changeStatus(cid, status);
+
+                // cid ile ürünün durumunu tersine çevir, eğer kategorisinin statusu false ise true yap
+            });
+
+            $('#btnCancel').on('click', function () {
+                // sağ menüdeki alanları sıfırla
+                // eğer butonda tik varsa artıya çevir
+
+                btnEditToAdd();
+
+                $('#inputName').val("");
+                $('#btnConfirm').data('cid', 0);
+                $('#btnConfirm').data('status', true);
+
+            });
+
+            $('#btnConfirm').on('click', function () {
+                // eğer var olan ürün düzenlendiyse update yap
+                // eğer yeni ürün eklendiyse ekleme yap
+                var btn = $(this);
+                var cid = btn.data('cid');
+                var name = $('#inputName').val();
+                var status = btn.data('status');
+
+                addupdate(cid, name, status);
+            });
+
+
+        });
+
+        function addupdate(cid, name, status) {
+
+            var data = 'ID:' + cid + ',name:"' + name + '",status:"' + status + '"';
+            var url = '@Url.Action("AddUpdateCategory", "Admin")';
+
+            myajax(url, data, function (e) {
+                if (e.confirm) {
+                    window.location.reload();
+                }
+                else {
+                    setError(e.errorMessage)
+                }
+            }, function (e) {
+                setError(e);
+            });
+        }
+
+        function changeStatus(pid, status) {
+
+            var data = 'ID:' + pid + ',status:"' + status + '"';
+            var url = '@Url.Action("ChangeCategoryStatus", "Admin")';
+
+            myajax(url, data, function (e) {
+                if (e.confirm) {
+                    window.location.reload();
+                }
+                else {
+                    setError(e.errorMessage)
+                }
+            }, function (e) {
+                setError(e);
+            });
+        }
+
+        function btnAddToEdit() {
+            $('#btnConfirm').removeClass('add').addClass('edit');
+            $('#btnConfirm i.tim-icons').removeClass('icon-simple-add').addClass('icon-check-2');
+        }
+
+        function btnEditToAdd() {
+            $('#btnConfirm').removeClass('edit').addClass('add');
+            $('#btnConfirm i.tim-icons').removeClass('icon-check-2').addClass('icon-simple-add');
+        }
+
+        function setError(errorMessage) {
+            var error = '<div class="alert alert-danger">'+
+               '<button type="button" aria-hidden="true" class="close" data-dismiss="alert" >'+
+                   '<i class="tim-icons icon-simple-remove"></i>'+
+               '</button >'+
+               '<span><b> Hata - </b>' + errorMessage + '</span>'+
+                '</div >'
+            $('.myerror').html(error);
+        }
+
+        function findCategory(cid) {
+            var jsonMenu = @Html.Raw(jsonMenu);
+            console.log(jsonMenu);
+
+            //console.log(jsonMenu[0]['products'][0]['name']);
+
+            for (var i = 0; i < jsonMenu.length; i++) {
+                if (jsonMenu[i]['category']['ID'] == cid)
+                    return jsonMenu[i]['category'];
+            }
+        }
+    </script>
+}

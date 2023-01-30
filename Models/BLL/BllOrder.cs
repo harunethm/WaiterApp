@@ -67,7 +67,7 @@ namespace WaiterApp.Models.BLL
                 UpdateOnly(order);
                 return true;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return false;
             }
