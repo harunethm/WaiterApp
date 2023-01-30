@@ -107,6 +107,16 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="roles">
+      <EntityTypeMapping TypeName="DBWaiterAppModel.role">
+        <MappingFragment StoreEntitySet="role">
+          <ScalarProperty Name="status" ColumnName="status" />
+          <ScalarProperty Name="authorityLevel" ColumnName="authorityLevel" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
     <EntitySetMapping Name="users">
       <EntityTypeMapping TypeName="DBWaiterAppModel.user">
         <MappingFragment StoreEntitySet="user">
